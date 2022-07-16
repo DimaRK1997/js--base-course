@@ -6,7 +6,7 @@
  * Функция вывода строк для работы в fizzBuzz
  * @param {*} a
  */
-function log(a) {
+ function log(a) {
   console.log(a);
 }
 
@@ -22,8 +22,14 @@ function log(a) {
  * В теле функции нельзя использовать  `if`, `switch`, тернарный оператор `? :`
  */
 function fizzBuzz() {
-  /* Ваше решение */
+  for (let i = 1; i <= 100; i++) {
+    (i % 15 === 0) && log("FizzBuzz") ||
+    (i % 3 === 0) && log("Fizz") ||
+    (i % 5 === 0) && log("Buzz") ||
+    log(i);
+  }
 }
+fizzBuzz();
 
 
 /**
@@ -33,11 +39,15 @@ function fizzBuzz() {
  * @param {string} textString
  * @return {boolean} Является строка полндромом (одинакого читается с лева на право и с права на лево ) или нет
  */
+
+let swap;
 function isPolindrom(textString) {
   /* Ваше решение */
-  return undefined;
+  swap = textString;
+  swap = swap.split('').reverse().join('');
+  return textString == swap;
 }
-
+isPolindrom('asdasfff')
 
 /**
  * Реализовать фукнцию `drawCalendar` ,
@@ -61,6 +71,22 @@ function drawCalendar(year, month, htmlEl) {
  * @return {boolean} идентичны ли параметры по содержимому
  */
 function isDeepEqual(objA, objB) {
-  /* Ваше решение */
-  return undefined;
+  /* Ваше решение */  
+  if (objA === objB) {
+    return true;
+  } else if ((objA != null && typeof objA == 'object') && (typeof objB == 'object' && objB != null)) {
+    if (Object.keys(objA).length == Object.keys(objB).length) {
+      for (let v in objA) {
+        if (!isDeepEqual(objA[v], objB[v])) {
+          return false;
+        }
+      }
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
 }
+isDeepEqual({name: 3, family: { man: 'dima', woman: 'vika'}}, {family: { man: 'dima', woman: 'vika'}});
