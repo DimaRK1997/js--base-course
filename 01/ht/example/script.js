@@ -58,37 +58,19 @@ isPolindrom('asdasfff')
  * @param {external:HTMLElement} htmlEl
  */
 function drawCalendar(year, month, htmlEl) {
-  let data = new Date(year, month-1, 0);
-  let dayname = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс']
-  const htmlmocha = document.getElementById('mocha');
-  //const div = document.createElement(htmlEl);
-  const table = document.createElement('table');
-  htmlmocha.append(htmlEl);
-  htmlEl.append(table);  
-
-  // htmlEl.forEach(element, index => {
-  // el.htmlEl.id = `calendar${index+1}`
-  // });
-  //table.id = 'calendar';
-  for (let i = 0; i <= 5; i++) {
-    var tr = document.createElement('tr');
-    //const tr = document.querySelectorAll('tr');
-    for (let j = 0; j <= 6; j++) {
-      var td = document.createElement('td');
-      tr.appendChild(td);
-      // const th = document.querySelectorAll('th')[j];
-      // if(i == 0) {
-      //   th.innerHTML = dayname[j];
-      // }
-    }
-    table.appendChild(tr);
+  let data = new Date(year, month, 0);
+  let dayweek = `<table><tr><td>пн</td><td>вт</td><td>ср</td><td>чт</td><td>пт</td><td>сб</td><td>вс</td></tr><tr>`;
+  for (let i = 1; i <= data.getDay() + 1; i++) {
+      dayweek += `<td></td>`;    
   }
-  for (let n = data.getDay(), i = 1; n <= data.getDate() + data.getDay() - 1; n++, i++) {
-    document.querySelectorAll('td')[n + 7].innerHTML = i;
+  for (let i = data.getDay(), n = 0; i <= data.getDate() + data.getDay(); i++, n++) {
+    if (i%7 == 0 && i != 0) dayweek += `</tr><tr>`;
+    if (n != 0) dayweek += `<td>${n}</td>`;
   }
-  console.log(data.getDate())
+  dayweek += `</tr>`;
+  htmlEl.innerHTML = dayweek;
 }
-drawCalendar(2022, 6, document.createElement('div'))
+drawCalendar(2022, 7, document.createElement("div"))
 
 
 /**
