@@ -63,8 +63,8 @@ function drawCalendar(year, month, htmlEl) {
       dayweek += `<td></td>`;    
   }
   for (let i = data.getDay(), n = 0; i <= data.getDate() + data.getDay(); i++, n++) {
-    if (i%7 === 0 && i != 0) dayweek += `</tr><tr>`;
-    if (n != 0) dayweek += `<td>${n}</td>`;
+    if (i%7 === 0 && i !== 0) dayweek += `</tr><tr>`;
+    if (n !== 0) dayweek += `<td>${n}</td>`;
   }
   dayweek += `</tr>`;
   htmlEl.innerHTML = dayweek;
@@ -83,7 +83,7 @@ function isDeepEqual(objA, objB) {
   /* Ваше решение */  
   if (objA === objB) {
     return true;
-  } else if ((objA != null && typeof objA === 'object') && (typeof objB === 'object' && objB != null)) {
+  } else if ((objA !== null && typeof objA === 'object') && (typeof objB === 'object' && objB !== null)) {
     if (Object.keys(objA).length === Object.keys(objB).length) {
       for (let v in objA) {
         if (!isDeepEqual(objA[v], objB[v])) {
@@ -101,23 +101,21 @@ function isDeepEqual(objA, objB) {
 
 
 function quadraticEquation(a, b, c) {
-  let d = Math.pow(b, 2) - 4*a*c;
+  let d = Math.pow(b, 2) - 4 * a * c;
   if(d === 0) {
-    return `[${(-1*b + Math.pow(d, 0.5))/(2*a)}]`;
+    return `[${(-1 * b + Math.pow(d, 0.5)) / (2 * a)}]`;
   } else if(d < 0) {
     return `[]`;
   } else {
-    return `[${(-1*b + Math.pow(d, 0.5))/(2*a)}, ${(-1*b - Math.pow(d, 0.5))/(2*a)}]`;
+    return `[${(-1 * b + Math.pow(d, 0.5)) / (2 * a)}, ${(-1 * b - Math.pow(d, 0.5)) / (2 * a)}]`;
   }
 }
 
 function spiral(arr) {
   for (let i = 0; i < arr.length; i++) {
-    for ( let j = 0; j < arr[i].length; j++) {
+    for (let j = 0; j < arr[i].length; j++) {
       
 
     }
-    console.log(arr[i])
   }
 }
-spiral([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
