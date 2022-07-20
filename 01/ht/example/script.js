@@ -23,13 +23,12 @@ function log(a) {
  */
 function fizzBuzz() {
   for (let i = 1; i <= 100; i++) {
-    (i % 15 === 0) && log("FizzBuzz") ||
-    (i % 3 === 0) && log("Fizz") ||
-    (i % 5 === 0) && log("Buzz") ||
-    log(i);
+    (i % 15 === 0 && log("FizzBuzz")) ||
+      (i % 3 === 0 && log("Fizz")) ||
+      (i % 5 === 0 && log("Buzz")) ||
+      log(i);
   }
 }
-
 
 /**
  * реализовать фукнцию  `isPolindrom`,
@@ -39,8 +38,8 @@ function fizzBuzz() {
  * @return {boolean} Является строка полндромом (одинакого читается с лева на право и с права на лево ) или нет
  */
 
-function isPolindrom(textString) { 
-  return textString === textString.split('').reverse().join('');
+function isPolindrom(textString) {
+  return textString === textString.split("").reverse().join("");
 }
 
 /**
@@ -55,16 +54,19 @@ function drawCalendar(year, month, htmlEl) {
   let data = new Date(year, month, 0);
   let dayweek = `<table><tr><td>пн</td><td>вт</td><td>ср</td><td>чт</td><td>пт</td><td>сб</td><td>вс</td></tr><tr>`;
   for (let i = 1; i <= data.getDay() + 1; i++) {
-      dayweek += `<td></td>`;    
+    dayweek += `<td></td>`;
   }
-  for (let i = data.getDay(), n = 0; i <= data.getDate() + data.getDay(); i++, n++) {
-    if (i%7 === 0 && i !== 0) dayweek += `</tr><tr>`;
+  for (
+    let i = data.getDay(), n = 0;
+    i <= data.getDate() + data.getDay();
+    i++, n++
+  ) {
+    if (i % 7 === 0 && i !== 0) dayweek += `</tr><tr>`;
     if (n !== 0) dayweek += `<td>${n}</td>`;
   }
   dayweek += `</tr>`;
   htmlEl.innerHTML = dayweek;
 }
-
 
 /**
  * Написать функцию `isDeepEqual`
@@ -75,10 +77,15 @@ function drawCalendar(year, month, htmlEl) {
  * @return {boolean} идентичны ли параметры по содержимому
  */
 function isDeepEqual(objA, objB) {
-  /* Ваше решение */  
+  /* Ваше решение */
   if (objA === objB) {
     return true;
-  } else if ((objA !== null && typeof objA === 'object') && (typeof objB === 'object' && objB !== null)) {
+  } else if (
+    objA !== null &&
+    typeof objA === "object" &&
+    typeof objB === "object" &&
+    objB !== null
+  ) {
     if (Object.keys(objA).length === Object.keys(objB).length) {
       for (let v in objA) {
         if (!isDeepEqual(objA[v], objB[v])) {
@@ -86,31 +93,27 @@ function isDeepEqual(objA, objB) {
         }
       }
       return true;
-    } else {
-      return false;
     }
-  } else {
-    return false;
   }
+  return false;
 }
 
-
 function quadraticEquation(a, b, c) {
+  let arr = [];
   let d = Math.pow(b, 2) - 4 * a * c;
-  if(d === 0) {
-    return `[${(-1 * b + Math.pow(d, 0.5)) / (2 * a)}]`;
-  } else if(d < 0) {
-    return `[]`;
-  } else {
-    return `[${(-1 * b + Math.pow(d, 0.5)) / (2 * a)}, ${(-1 * b - Math.pow(d, 0.5)) / (2 * a)}]`;
-  }
+  if (d === 0) {
+    arr.push((-1 * b + Math.pow(d, 0.5)) / (2 * a));
+  } else if (d > 0) {
+    arr.push(
+      (-1 * b + Math.pow(d, 0.5)) / (2 * a), 
+      (-1 * b - Math.pow(d, 0.5)) / (2 * a),
+    );
+  } 
+  return arr;
 }
 
 function spiral(arr) {
   for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr[i].length; j++) {
-      
-
-    }
+    for (let j = 0; j < arr[i].length; j++) {}
   }
 }
