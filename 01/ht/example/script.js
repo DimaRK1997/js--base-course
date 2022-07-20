@@ -115,4 +115,3 @@ function spiral(arr) {
     }
   }
 }
-console.log(1 !== 1)
