@@ -6,7 +6,7 @@
  * Функция вывода строк для работы в fizzBuzz
  * @param {*} a
  */
- function log(a) {
+function log(a) {
   console.log(a);
 }
 
@@ -101,3 +101,27 @@ function isDeepEqual(objA, objB) {
   }
 }
 isDeepEqual({name: 3, family: { man: 'dima', woman: 'vika'}}, {family: { man: 'dima', woman: 'vika'}});
+
+
+function quadraticEquation(a, b, c) {
+  let d = Math.pow(b, 2) - 4*a*c;
+  if(d == 0) {
+    return `[${(-1*b + Math.pow(d, 0.5))/(2*a)}]`;
+  } else if(d < 0) {
+    return `[]`;
+  } else {
+    return `[${(-1*b + Math.pow(d, 0.5))/(2*a)}, ${(-1*b - Math.pow(d, 0.5))/(2*a)}]`;
+  }
+}
+quadraticEquation(1, 10, 9);
+
+function spiral(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    for ( let j = 0; j < arr[i].length; j++) {
+      
+
+    }
+    console.log(arr[i])
+  }
+}
+spiral([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
