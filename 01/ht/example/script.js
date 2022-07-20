@@ -29,7 +29,6 @@ function fizzBuzz() {
     log(i);
   }
 }
-fizzBuzz();
 
 
 /**
@@ -41,11 +40,8 @@ fizzBuzz();
  */
 
 let swap;
-function isPolindrom(textString) {
-  /* Ваше решение */
-  swap = textString;
-  swap = swap.split('').reverse().join('');
-  return textString === swap;
+function isPolindrom(textString) { 
+  return textString === textString.split('').reverse().join('');
 }
 
 /**
@@ -119,3 +115,4 @@ function spiral(arr) {
     }
   }
 }
+console.log(1 !== 1)
