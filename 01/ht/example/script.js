@@ -45,9 +45,8 @@ function isPolindrom(textString) {
   /* Ваше решение */
   swap = textString;
   swap = swap.split('').reverse().join('');
-  return textString == swap;
+  return textString === swap;
 }
-isPolindrom('asdasfff')
 
 /**
  * Реализовать фукнцию `drawCalendar` ,
@@ -64,13 +63,12 @@ function drawCalendar(year, month, htmlEl) {
       dayweek += `<td></td>`;    
   }
   for (let i = data.getDay(), n = 0; i <= data.getDate() + data.getDay(); i++, n++) {
-    if (i%7 == 0 && i != 0) dayweek += `</tr><tr>`;
+    if (i%7 === 0 && i != 0) dayweek += `</tr><tr>`;
     if (n != 0) dayweek += `<td>${n}</td>`;
   }
   dayweek += `</tr>`;
   htmlEl.innerHTML = dayweek;
 }
-drawCalendar(2022, 7, document.createElement("div"))
 
 
 /**
@@ -85,8 +83,8 @@ function isDeepEqual(objA, objB) {
   /* Ваше решение */  
   if (objA === objB) {
     return true;
-  } else if ((objA != null && typeof objA == 'object') && (typeof objB == 'object' && objB != null)) {
-    if (Object.keys(objA).length == Object.keys(objB).length) {
+  } else if ((objA != null && typeof objA === 'object') && (typeof objB === 'object' && objB != null)) {
+    if (Object.keys(objA).length === Object.keys(objB).length) {
       for (let v in objA) {
         if (!isDeepEqual(objA[v], objB[v])) {
           return false;
@@ -100,12 +98,11 @@ function isDeepEqual(objA, objB) {
     return false;
   }
 }
-isDeepEqual({name: 3, family: { man: 'dima', woman: 'vika'}}, {family: { man: 'dima', woman: 'vika'}});
 
 
 function quadraticEquation(a, b, c) {
   let d = Math.pow(b, 2) - 4*a*c;
-  if(d == 0) {
+  if(d === 0) {
     return `[${(-1*b + Math.pow(d, 0.5))/(2*a)}]`;
   } else if(d < 0) {
     return `[]`;
@@ -113,7 +110,6 @@ function quadraticEquation(a, b, c) {
     return `[${(-1*b + Math.pow(d, 0.5))/(2*a)}, ${(-1*b - Math.pow(d, 0.5))/(2*a)}]`;
   }
 }
-quadraticEquation(1, 10, 9);
 
 function spiral(arr) {
   for (let i = 0; i < arr.length; i++) {
