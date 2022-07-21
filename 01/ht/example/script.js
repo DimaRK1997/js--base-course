@@ -105,15 +105,39 @@ function quadraticEquation(a, b, c) {
     arr.push((-1 * b + Math.pow(d, 0.5)) / (2 * a));
   } else if (d > 0) {
     arr.push(
-      (-1 * b + Math.pow(d, 0.5)) / (2 * a), 
-      (-1 * b - Math.pow(d, 0.5)) / (2 * a),
+      (-1 * b + Math.pow(d, 0.5)) / (2 * a),
+      (-1 * b - Math.pow(d, 0.5)) / (2 * a)
     );
-  } 
+  }
   return arr;
 }
 
 function spiral(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr[i].length; j++) {}
+  const size = [].concat(...arr).length;
+  console.log(size);
+  let res = [];
+  let row = 0;
+  let maxrowy = arr.length - 1;
+  let col = 0;
+  let maxcolx = arr[row].length - 1;
+  while (res.length < size) {
+    for (let i = col; i <= maxcolx; i++) {
+      res.push(arr[row][i]);
+    }
+
+    row++;
+    for (let i = row; i <= maxrowy; i++) {
+      res.push(arr[i][maxcolx]);
+    }
+    maxcolx--;
+    for (let i = maxcolx; col <= i; i--) {
+      res.push(arr[maxrowy][i]);
+    }
+    maxrowy--;
+    for (let i = maxrowy; row <= i; i--) {
+      res.push(arr[i][col]);
+    }
+    col++;
   }
+  console.log(res);
 }
