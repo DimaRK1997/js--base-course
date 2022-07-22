@@ -114,17 +114,16 @@ function quadraticEquation(a, b, c) {
 
 function spiral(arr) {
   const size = [].concat(...arr).length;
-  console.log(size);
   let res = [];
   let row = 0;
   let maxrowy = arr.length - 1;
   let col = 0;
   let maxcolx = arr[row].length - 1;
+
   while (res.length < size) {
     for (let i = col; i <= maxcolx; i++) {
       res.push(arr[row][i]);
     }
-
     row++;
     for (let i = row; i <= maxrowy; i++) {
       res.push(arr[i][maxcolx]);
@@ -139,5 +138,6 @@ function spiral(arr) {
     }
     col++;
   }
-  console.log(res);
+  return res;  
 }
+

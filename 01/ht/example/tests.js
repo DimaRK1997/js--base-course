@@ -16,3 +16,18 @@ describe("quadraticEquation", function() {
                     );
     });
 });
+
+describe("spiral", function() {
+    it("function", function() {
+        assert.isOk(typeof spiral === "function");
+    });
+    it("display NxN matrix", function() {
+        assert.isOk(Object.is(spiral([[1, 3, 4], [3, 4, 7], [4, 5, 7]])) 
+                              === Object.is([1, 3, 4, 7, 7, 5, 4, 3, 4]));
+    });
+    it("display NxM matrix", function() {
+        assert.isOk(Object.is(spiral([[1, 3, 2, 4], [3, 4, 7, 5], [4, 5, 7, 7]])) 
+                              === Object.is([1, 3, 2, 4, 5, 7, 7, 5, 4, 3, 4, 7]));
+    });
+});
+
