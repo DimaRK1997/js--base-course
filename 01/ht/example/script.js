@@ -120,20 +120,24 @@ function spiral(arr) {
   let col = 0;
   let maxcolx = arr[row].length - 1;
 
-  while (res.length < size) {
+  while (res.length  < size) {
     for (let i = col; i <= maxcolx; i++) {
+      if(res.length === size) break;
       res.push(arr[row][i]);
     }
     row++;
     for (let i = row; i <= maxrowy; i++) {
+      if(res.length === size) break;
       res.push(arr[i][maxcolx]);
     }
     maxcolx--;
     for (let i = maxcolx; col <= i; i--) {
+      if(res.length === size) break;
       res.push(arr[maxrowy][i]);
     }
     maxrowy--;
     for (let i = maxrowy; row <= i; i--) {
+      if(res.length === size) break;
       res.push(arr[i][col]);
     }
     col++;
