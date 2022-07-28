@@ -30,7 +30,7 @@ function isDeepEqual(objA, objB) {
       return true;
     }
   } else if (typeof objB === "number" && typeof objA === "number") {
-    return (isNaN(objA) && isNaN(objB));
+    return isNaN(objA) && isNaN(objB);
   }
   return false;
 }
@@ -42,7 +42,9 @@ function isDeepEqual(objA, objB) {
  * @return {function} функция с зафиксированным контекстом
  */
 function bind(func, context) {
-  return undefined;
+  return function () {
+    func.apply(context, arguments);
+  };
 }
 
 /**
@@ -52,21 +54,21 @@ function bind(func, context) {
  */
 
 /**
-* создать объект с волшебным свойством,
-* чтобы при присвоении ему значения, в консоль выводилась текущая дата и значение, которое присваиваем.
-* А при чтении всегда выводилось число на 1 больше предыдущего
-* o.magicProperty = 5; // 'Sat Mar 24 2018 13:48:47 GMT+0300 (+03) -- 5'
-* console.log(o.magicProperty); // 6
-* console.log(o.magicProperty); // 7
-* console.log(o.magicProperty); // 8
-*/
+ * создать объект с волшебным свойством,
+ * чтобы при присвоении ему значения, в консоль выводилась текущая дата и значение, которое присваиваем.
+ * А при чтении всегда выводилось число на 1 больше предыдущего
+ * o.magicProperty = 5; // 'Sat Mar 24 2018 13:48:47 GMT+0300 (+03) -- 5'
+ * console.log(o.magicProperty); // 6
+ * console.log(o.magicProperty); // 7
+ * console.log(o.magicProperty); // 8
+ */
 
 /**
-* Создать конструктор с методами, так,
-* чтобы следующий код работал и делал соответствующие вещи
-* те запуск кода ниже должен делать то, что говорят методы
-* u.askName().askAge().showAgeInConsole().showNameInAlert();
-*/
+ * Создать конструктор с методами, так,
+ * чтобы следующий код работал и делал соответствующие вещи
+ * те запуск кода ниже должен делать то, что говорят методы
+ * u.askName().askAge().showAgeInConsole().showNameInAlert();
+ */
 
 /**
  * Написать фукнцию-калькулятор, которая работает следующим образом
@@ -74,8 +76,22 @@ function bind(func, context) {
  * calculate('*')(2)(3); // 6
  * Допустимые операции : + - * /
  */
-function calculate() {
-  /* put your code here */
+
+function calculate(z) {
+  return function (a) {
+    return function (b) {
+      switch (z) {
+        case "+":
+          return a + b;
+        case "*":
+          return a * b;
+        case "-":
+          return a - b;
+        case "/":
+          return a / b;
+      }
+    };
+  };
 }
 
 /**
@@ -83,17 +99,22 @@ function calculate() {
  * new Singleton() === new Singleton
  */
 function Singleton() {
-  throw 'undefined';
+  throw "undefined";
 }
 
 /**
-  * Создайте функцию ForceConstructor
-  * которая работает как конструктор независимо от того,
-  * вызвана она с new или без
-  * и сохраняет параметры в создаваемый объект с именами параметров
-  */
+ * Создайте функцию ForceConstructor
+ * которая работает как конструктор независимо от того,
+ * вызвана она с new или без
+ * и сохраняет параметры в создаваемый объект с именами параметров
+ */
 function ForceContructor(a, b, c) {
-  throw 'undefined';
+  this.a = a;
+  this.b = b;
+  this.c = c;
+  if (!new.target) {
+    return new ForceContructor(a, b, c);
+  }
 }
 
 /**
@@ -105,8 +126,18 @@ function ForceContructor(a, b, c) {
  * log(s(3)(4)(5)); // 12
  * Число вызовов может быть неограниченым
  */
-function sum() {
-  throw 'undefined';
+function sum(a) {
+  let res = a || 0;
+
+  function f(b) {
+    b = b || 0;
+    return sum(res + b);
+  }
+  f.toString = function () {
+    return res;
+  };
+
+  return f;
 }
 
 function log(x) {
