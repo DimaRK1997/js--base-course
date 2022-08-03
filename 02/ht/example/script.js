@@ -63,6 +63,20 @@ function bind(func, context) {
  * console.log(o.magicProperty); // 8
  */
 
+let o = {
+  magicProperty: 0  
+}
+Object.defineProperty(o, "magicProperty", {
+  get: function () {
+    return magicProperty += 1;
+  },
+  set: function (value) {
+    magicProperty = value;
+    console.log(new Date() + "--" + magicProperty);
+  }
+});
+
+
 /**
  * Создать конструктор с методами, так,
  * чтобы следующий код работал и делал соответствующие вещи
