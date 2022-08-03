@@ -64,18 +64,17 @@ function bind(func, context) {
  */
 
 let o = {
-  magicProperty: 0  
-}
+  magicProperty: 0,
+};
 Object.defineProperty(o, "magicProperty", {
   get: function () {
-    return magicProperty += 1;
+    return (magicProperty += 1);
   },
   set: function (value) {
     magicProperty = value;
     console.log(new Date() + "--" + magicProperty);
-  }
+  },
 });
-
 
 /**
  * Создать конструктор с методами, так,
