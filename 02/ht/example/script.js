@@ -53,6 +53,10 @@ function bind(func, context) {
  * (можно использовать фукнцию выше)
  */
 
+Function.prototype.myBind = function (context) {
+  return bind(this, context);
+};
+
 /**
  * создать объект с волшебным свойством,
  * чтобы при присвоении ему значения, в консоль выводилась текущая дата и значение, которое присваиваем.
@@ -82,6 +86,25 @@ Object.defineProperty(o, "magicProperty", {
  * те запуск кода ниже должен делать то, что говорят методы
  * u.askName().askAge().showAgeInConsole().showNameInAlert();
  */
+
+function ASK() {
+  this.askName = function () {
+    this.name = prompt("You name?", "");
+    return this;
+  };
+  this.askAge = function () {
+    this.age = prompt("Age?", "");
+    return this;
+  };
+  this.showAgeInConsole = function () {
+    console.log("You name is " + this.age);
+    return this;
+  };
+  this.showNameInAlert = function () {
+    alert("You name is " + this.name);
+    return this;
+  };
+}
 
 /**
  * Написать фукнцию-калькулятор, которая работает следующим образом
@@ -180,6 +203,14 @@ function curry(func) {}
 Написать код, который для объекта созданного с помощью конструктора будет показывать,
 что объект является экземпляром двух классов
 */
+
+function User() {}
+
+function PreUser() {}
+
+User.prototype = Array.prototype;
+PreUser.prototype = Array.prototype;
+
 /* Тут ваш код */
 // User === PreUser; // false
 // u instanceof User; // true
