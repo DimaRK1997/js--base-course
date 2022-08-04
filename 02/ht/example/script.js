@@ -68,17 +68,15 @@ Function.prototype.myBind = function (context) {
  */
 
 let o = {
-  magicProperty: 0,
+  count: 0,
+  get magicProperty() {
+    return (this.count += 1);
+  },
+  set magicProperty(value) {
+    this.count = value;
+    console.log(new Date() + "--" + this.count);
+  },
 };
-Object.defineProperty(o, "magicProperty", {
-  get: function () {
-    return (magicProperty += 1);
-  },
-  set: function (value) {
-    magicProperty = value;
-    console.log(new Date() + "--" + magicProperty);
-  },
-});
 
 /**
  * Создать конструктор с методами, так,
@@ -135,9 +133,11 @@ function calculate(z) {
  * new Singleton() === new Singleton
  */
 function Singleton() {
-  throw "undefined";
+  if (!(typeof Singleton.h === "object")) {
+    Singleton.h = this;
+  }
+  return Singleton.h;
 }
-
 /**
  * Создайте функцию ForceConstructor
  * которая работает как конструктор независимо от того,
@@ -197,7 +197,6 @@ function log(x) {
  * https://github.com/MostlyAdequate/mostly-adequate-guide-ru/blob/master/ch4-ru.md
  * @param {*} func
  */
-function curry(func) {}
 
 /*
 Написать код, который для объекта созданного с помощью конструктора будет показывать,
