@@ -133,10 +133,10 @@ function calculate(z) {
  * new Singleton() === new Singleton
  */
 function Singleton() {
-  if (!(typeof Singleton.h === "object")) {
-    Singleton.h = this;
+  if (Singleton.example === undefined) {
+    Singleton.example = this;
   }
-  return Singleton.h;
+  return Singleton.example;
 }
 /**
  * Создайте функцию ForceConstructor
@@ -198,6 +198,29 @@ function log(x) {
  * @param {*} func
  */
 
+
+ function target1(a,b,c,d) { 
+  return a + b + c + d 
+}
+
+function curry(func) {
+  let arr = [];
+  let res = 0;
+  function check(a) {
+    arr.push(a);
+    if(arr.length < func.length) {
+      return check;
+    } else {
+      for(let v of arr) {
+        res += v;
+      }
+      return res;
+    }
+  }
+  return check;
+}
+
+console.log(curry(target1)(1)(2)(3)(4));
 /*
 Написать код, который для объекта созданного с помощью конструктора будет показывать,
 что объект является экземпляром двух классов
