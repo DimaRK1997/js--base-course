@@ -17,18 +17,17 @@ function isDeepEqual(objA, objB) {
     objA !== null &&
     typeof objA === "object" &&
     typeof objB === "object" &&
-    objB !== null
+    objB !== null &&
+    Object.keys(objA).length === Object.keys(objB).length
   ) {
-    if (Object.keys(objA).length === Object.keys(objB).length) {
-      for (let v in objA) {
-        if (!(objA[v] === objA && objB[v] === objB)) {
-          if (!isDeepEqual(objA[v], objB[v])) {
-            return false;
-          }
+    for (let v in objA) {
+      if (!(objA[v] === objA && objB[v] === objB)) {
+        if (!isDeepEqual(objA[v], objB[v])) {
+          return false;
         }
       }
-      return true;
     }
+    return true;
   } else if (typeof objB === "number" && typeof objA === "number") {
     return isNaN(objA) && isNaN(objB);
   }
@@ -67,7 +66,7 @@ Function.prototype.myBind = function (context) {
  * console.log(o.magicProperty); // 8
  */
 
-let o = {
+const o = {
   count: 0,
   get magicProperty() {
     return (this.count += 1);
@@ -219,7 +218,6 @@ function curry(func) {
   return check;
 }
 
-console.log(curry(target1)(1)(2)(3)(4));
 /*
 Написать код, который для объекта созданного с помощью конструктора будет показывать,
 что объект является экземпляром двух классов
