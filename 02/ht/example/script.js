@@ -42,7 +42,7 @@ function isDeepEqual(objA, objB) {
  */
 function bind(func, context) {
   return function () {
-    func.apply(context, arguments);
+    return func.apply(context, arguments);
   };
 }
 
@@ -132,10 +132,10 @@ function calculate(z) {
  * new Singleton() === new Singleton
  */
 function Singleton() {
-  if (Singleton.example === undefined) {
-    Singleton.example = this;
+  if (Singleton.self === undefined) {
+    Singleton.self = this;
   }
-  return Singleton.example;
+  return Singleton.self;
 }
 /**
  * Создайте функцию ForceConstructor
@@ -201,21 +201,24 @@ function target1(a, b, c, d) {
   return a + b + c + d;
 }
 
+function target2(a, b, c) {
+  return a + b + c;
+}
+
+function target3(a, b) {
+  return a + b;
+}
+
 function curry(func) {
   let arr = [];
-  let res = 0;
-  function check(a) {
+  return function check(a) {
     arr.push(a);
     if (arr.length < func.length) {
       return check;
     } else {
-      for (let v of arr) {
-        res += v;
-      }
-      return res;
+      return arr.reduce((a, b) => a + b);
     }
-  }
-  return check;
+  };
 }
 
 /*
