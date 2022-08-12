@@ -1,17 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Form</title>
-</head>
-<body>
-    <div id="calendar">
-    </div>
-    
+  </head>
+  <body>
+    <div id="calendar"></div>
     <div id="formContent" class="form">
+      <form id="form">
+        <label for="name">Name:</label><br />
+        <input
+          type="text"
+          id="name"
+          name="name"
+          pattern="^[A-Za-zА-Яа-яЁё]+$"
+          required
+        /><br /><br />
+        <label for="age">Age:</label><br />
+        <input
+          type="number"
+          id="age"
+          name="age"
+          min="18"
+          max="150"
+          required
+        /><br /><br />
+        <label for="city">City:</label><br />
+        <select name="city" id="city">
+          <option value="Minsk">Minsk</option>
+          <option value="Grodno">Grodno</option>
+          <option value="Brest">Brest</option>
+          <option value="Gomel">Gomel</option></select
+        ><br /><br />
+        <label for="commented">Commented:</label><br />
+        <textarea id="commented" name="commented" required></textarea
+        ><br /><br />
+        <label for="male">male:</label><br />
+        <input type="radio" id="woman" name="male" value="woman" checked />
+        <label for="woman">woman</label><br />
+        <input type="radio" id="man" name="male" value="man" />
+        <label for="man">man</label><br /><br />
+        <button id="btnsbm">submit</button>
+      </form>
+      <br />
+      <div id="titleform"></div>
     </div>
-    <script src="./formScript.js"></script>    
-</body>
+    <script src="./formScript.js"></script>
+  </body>
 </html>
