@@ -10,7 +10,7 @@ formElement.addEventListener("submit", function (e) {
 function getFormData() {
   const form = new FormData(formElement);
   const values = Object.fromEntries(form);
-  return textContent = `Зовут ${values.name}-${values.male}. Мне ${values.age}, я из ${values.city}. Commented: '${values.commented}'`;
+  return `Зовут ${values.name}-${values.male}. Мне ${values.age}, я из ${values.city}. Commented: '${values.commented}'`;
 }
 
 function showFormResults(textForms) {
