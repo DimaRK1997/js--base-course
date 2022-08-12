@@ -1,17 +1,25 @@
-const formContent = document.querySelector("#formContent");
+const formElement = document.querySelector("form");
 
-formContent.addEventListener("submit", function (e) {
+formElement.addEventListener("submit", function (e) {
   e.preventDefault();
-  const titleform = document.querySelector("#titleform");
-  const formData = new FormData(form);
+  const formData = getFormData();
+  showFormResults(formData);
+  formElement.reset();
+});
+
+function getFormData() {
+  return new FormData(formElement);
+}
+
+function showFormResults(formData) {
   const values = Object.fromEntries(formData);
   const textContent = `Зовут ${values.name}-${values.male}. Мне ${values.age}, я из ${values.city}. Commented: '${values.commented}'`;
-  const crdivcnt = document.createElement("div");
-  crdivcnt.id = "contentData";
-  titleform.append(crdivcnt);
-  crdivcnt.textContent = textContent;
-  form.reset();
-});
+  const contentElement = document.createElement("div");
+  contentElement.id = "contentData";
+  const titleform = document.querySelector("#titleform");
+  titleform.append(contentElement);
+  contentElement.textContent = textContent;
+}
 
 function drawInteractiveCalendar(el) {
   let titleCalendar = `<table id="title">
