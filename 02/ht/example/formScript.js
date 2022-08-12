@@ -63,11 +63,11 @@ function drawCalendar(year, month, htmlEl) {
   let dayweek = `<table><tr><td>пн</td><td>вт</td><td>ср</td><td>чт</td><td>пт</td><td>сб</td><td>вс</td></tr><tr>`;
   dayweek += `${"<td></td>".repeat(date.getUTCDay())}`;
   const n = date.getUTCDay();
-  while(date.getMonth() === month) {
+  while (date.getMonth() === month) {
     if ((date.getDate() + n) % 7 === 0) {
-        dayweek += `<td>${date.getDate()}</td></tr><tr>`; 
+      dayweek += `<td>${date.getDate()}</td></tr><tr>`;
     } else {
-        dayweek += `<td>${date.getDate()}</td>`; 
+      dayweek += `<td>${date.getDate()}</td>`;
     }
     date.setDate(date.getDate() + 1);
   }
