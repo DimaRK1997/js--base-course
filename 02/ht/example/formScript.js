@@ -60,16 +60,17 @@ function drawInteractiveCalendar(el) {
 }
 
 function drawCalendar(year, month, htmlEl) {
-  let date = new Date(year, month, 0);
+  const date = new Date(year, month);
   let dayweek = `<table><tr><td>пн</td><td>вт</td><td>ср</td><td>чт</td><td>пт</td><td>сб</td><td>вс</td></tr><tr>`;
-  dayweek += `${"<td></td>".repeat(date.getDay())}`;
-  for (
-    let i = date.getDay(), n = 1;
-    i < date.getDate() + date.getDay();
-    i++, n++
-  ) {
-    if (i % 7 === 0 && i !== 0) dayweek += `</tr><tr>`;
-    if (n !== 0) dayweek += `<td>${n}</td>`;
+  dayweek += `${"<td></td>".repeat(date.getUTCDay())}`;
+  const n = date.getUTCDay();
+  while(date.getMonth() === month) {
+    if ((date.getDate() + n) % 7 === 0) {
+        dayweek += `<td>${date.getDate()}</td></tr><tr>`; 
+    } else {
+        dayweek += `<td>${date.getDate()}</td>`; 
+    }
+    date.setDate(date.getDate() + 1);
   }
   dayweek += `</tr>`;
   htmlEl.innerHTML = dayweek;
