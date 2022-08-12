@@ -8,17 +8,16 @@ formElement.addEventListener("submit", function (e) {
 });
 
 function getFormData() {
-  return new FormData(formElement);
+  const form = new FormData(formElement);
+  const values = Object.fromEntries(form);
+  return textContent = `Зовут ${values.name}-${values.male}. Мне ${values.age}, я из ${values.city}. Commented: '${values.commented}'`;
 }
 
-function showFormResults(formData) {
-  const values = Object.fromEntries(formData);
-  const textContent = `Зовут ${values.name}-${values.male}. Мне ${values.age}, я из ${values.city}. Commented: '${values.commented}'`;
+function showFormResults(textForms) {
   const contentElement = document.createElement("div");
-  contentElement.id = "contentData";
   const titleform = document.querySelector("#titleform");
   titleform.append(contentElement);
-  contentElement.textContent = textContent;
+  contentElement.textContent = textForms;
 }
 
 function drawInteractiveCalendar(el) {
