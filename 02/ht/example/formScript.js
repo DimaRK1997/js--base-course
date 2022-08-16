@@ -61,10 +61,10 @@ function drawInteractiveCalendar(el) {
 function drawCalendar(year, month, htmlEl) {
   const date = new Date(year, month);
   let dayweek = `<table onclick="tableClick(event)"><tr><td>пн</td><td>вт</td><td>ср</td><td>чт</td><td>пт</td><td>сб</td><td>вс</td></tr><tr>`;
-  const cleartd = () => (date.getDay() === 0)?6:(date.getDay()-1);
+  const cleartd = () => (date.getDay() === 0 ? 6 : date.getDay() - 1);
   dayweek += `${"<td></td>".repeat(cleartd())}`;
   const indexDay = cleartd();
-  while (date.getMonth() === month) { 
+  while (date.getMonth() === month) {
     if ((date.getDate() + indexDay) % 7 === 0) {
       dayweek += `<td>${date.getDate()}</td></tr><tr>`;
     } else {
@@ -79,36 +79,40 @@ function drawCalendar(year, month, htmlEl) {
 drawInteractiveCalendar(document.querySelector("#calendar"));
 
 function tableClick(e) {
-    const target = e.target;
-    if(Number(target.textContent)) {
-        const eventDate = prompt(`Заметка на ${target.textContent}`,'');
-        if(eventDate === null || eventDate === '') return;
-        const stroutput = `${target.textContent}.${document.getElementById('month').textContent}.${document.getElementById('year').textContent}: ${eventDate}`;
-        localText(stroutput)  
-        addText()
-    } 
+  const target = e.target;
+  if (Number(target.textContent)) {
+    const eventDate = prompt(`Заметка на ${target.textContent}`, "");
+    if (eventDate === null || eventDate === "") return;
+    const stroutput = `${target.textContent}.${
+      document.getElementById("month").textContent
+    }.${document.getElementById("year").textContent}: ${eventDate}`;
+    localText(stroutput);
+    addText();
+  }
 }
 
 //calendar
 const calendarDiv = document.querySelector("#calendar");
 const eventCalendar = document.createElement("div");
 calendarDiv.append(eventCalendar);
-let localtext = localStorage.getItem("stroutput")?localStorage.getItem("stroutput"):''
+let localtext = localStorage.getItem("stroutput")
+  ? localStorage.getItem("stroutput")
+  : "";
 
 function localText(text) {
   localtext = localtext + `${text},`;
-  localStorage.setItem("stroutput", localtext)
+  localStorage.setItem("stroutput", localtext);
 }
 
 function addText() {
-  eventCalendar.innerHTML = '';
-  for(let el of localtext.split(',')) {
-    eventCalendar.innerHTML = eventCalendar.innerHTML + `<p> ${eventCalendar.textContent = el} </p>` 
+  eventCalendar.innerHTML = "";
+  for (let el of localtext.split(",")) {
+    eventCalendar.innerHTML =
+      eventCalendar.innerHTML + `<p> ${(eventCalendar.textContent = el)} </p>`;
   }
 }
 
-document.addEventListener('load', addText());
-
+document.addEventListener("load", addText());
 
 // sleep
 console.log(new Date());
@@ -116,9 +120,9 @@ sleep(3);
 console.log(new Date());
 
 function sleep(seconds) {
-    const start = new Date().getTime() + seconds*1000;
-    let finish = new Date().getTime();
-    while(start >= finish) {
-        finish = new Date().getTime();
-    }
+  const start = new Date().getTime() + seconds * 1000;
+  let finish = new Date().getTime();
+  while (start >= finish) {
+    finish = new Date().getTime();
+  }
 }
