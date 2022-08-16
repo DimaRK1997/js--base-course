@@ -239,6 +239,19 @@ PreUser.prototype = Array.prototype;
 // u instanceof Array; // true
 // u instanceof PreUser; // true
 
+// sleep
+console.log(new Date());
+sleep(3);
+console.log(new Date());
+
+function sleep(seconds) {
+  const start = new Date().getTime() + seconds * 1000;
+  let finish = new Date().getTime();
+  while (finish <= start) {
+    finish = new Date().getTime();
+  }
+}
+
 /*
 Создать веб страницу. Добавить на нее форму с полями
 - имя (строкое поле),
