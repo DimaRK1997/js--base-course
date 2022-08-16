@@ -1,6 +1,6 @@
 const formElement = document.querySelector("form");
 
-formElement.addEventListener("submit", function(e) {
+formElement.addEventListener("submit", function (e) {
   e.preventDefault();
   const formData = getFormData();
   showFormResults(formData);
@@ -42,7 +42,7 @@ function drawInteractiveCalendar(el) {
   monthElement.textContent = date.getMonth() + 1;
   yearElement.textContent = date.getFullYear();
 
-  titleElement.addEventListener("click", function(e) {
+  titleElement.addEventListener("click", function (e) {
     if (e.target.matches("#last")) {
       date.setMonth(date.getMonth() - 1);
     } else if (e.target.matches("#next")) {
@@ -77,7 +77,6 @@ function drawCalendar(year, month, htmlEl) {
 
 drawInteractiveCalendar(document.querySelector("#calendar"));
 
-
 function tableClick(e) {
   const target = e.target;
   if (Number(target.textContent)) {
@@ -91,17 +90,17 @@ function tableClick(e) {
   }
 }
 
-document.querySelector('#content').addEventListener('click', tableClick)
+document.querySelector("#content").addEventListener("click", tableClick);
 
 //calendar
 const calendarDiv = document.querySelector("#calendar");
 const notesCalendar = document.createElement("div");
 calendarDiv.append(notesCalendar);
 let textNotes;
-if(localStorage.getItem("notedays")) {
+if (localStorage.getItem("notedays")) {
   textNotes = localStorage.getItem("notedays");
 } else {
-  textNotes = '';
+  textNotes = "";
 }
 
 function setTextLocal(textNote) {
@@ -112,7 +111,7 @@ function setTextLocal(textNote) {
 function showTextNote() {
   notesCalendar.innerHTML = "";
   textNotes.split(",").map((el) => {
-    return notesCalendar.innerHTML += `<p>${el}</p>`
+    return (notesCalendar.innerHTML += `<p>${el}</p>`);
   });
 }
 
