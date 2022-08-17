@@ -72,8 +72,7 @@ document.querySelector("#content").addEventListener("click", tableClick);
 const calendarDiv = document.querySelector("#calendar");
 const notesCalendar = document.createElement("div");
 calendarDiv.append(notesCalendar);
-let textNotes = localStorage.getItem("notedays")||"";
-console.log(textNotes)
+let textNotes = localStorage.getItem("notedays") || "";
 
 function setTextLocal(textNote) {
   textNotes += `${textNote},`;
