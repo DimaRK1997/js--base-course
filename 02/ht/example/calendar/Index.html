@@ -8,43 +8,6 @@
   </head>
   <body>
     <div id="calendar"></div>
-    <form>
-        <label for="name">Name:</label><br />
-        <input
-          type="text"
-          id="name"
-          name="name"
-          pattern="^[A-Za-zА-Яа-яЁё]+$"
-          required
-        /><br /><br />
-        <label for="age">Age:</label><br />
-        <input
-          type="number"
-          id="age"
-          name="age"
-          min="18"
-          max="150"
-          required
-        /><br /><br />
-        <label for="city">City:</label><br />
-        <select name="city" id="city">
-          <option value="Minsk">Minsk</option>
-          <option value="Grodno">Grodno</option>
-          <option value="Brest">Brest</option>
-          <option value="Gomel">Gomel</option></select>
-        <br /><br />
-        <label for="commented">Commented:</label><br />
-        <textarea id="commented" name="commented" required></textarea
-        ><br /><br />
-        <label for="male">male:</label><br />
-        <input type="radio" id="woman" name="male" value="woman" checked />
-        <label for="woman">woman</label><br />
-        <input type="radio" id="man" name="male" value="man" />
-        <label for="man">man</label><br /><br />
-        <button>submit</button>
-    </form>
-    <br />
-    <div id="form-data"></div>
-    <script src="./script.js"></script>
+    <script src="..//calendar/script.js"></script>
   </body>
 </html>

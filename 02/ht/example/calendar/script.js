@@ -1,25 +1,3 @@
-const formElement = document.querySelector("form");
-
-formElement.addEventListener("submit", function (e) {
-  e.preventDefault();
-  const formData = getFormData();
-  showFormResults(formData);
-  formElement.reset();
-});
-
-function getFormData() {
-  const form = new FormData(formElement);
-  const values = Object.fromEntries(form);
-  return `Зовут ${values.name}-${values.male}. Мне ${values.age}, я из ${values.city}. Commented: '${values.commented}'`;
-}
-
-function showFormResults(textForms) {
-  const contentElement = document.createElement("p");
-  const formDataElement = document.querySelector("#form-data");
-  formDataElement.append(contentElement);
-  contentElement.textContent = textForms;
-}
-
 function drawInteractiveCalendar(el) {
   let titleCalendar = `<table id="title">
                           <tr>
@@ -58,15 +36,16 @@ function drawInteractiveCalendar(el) {
   });
 }
 
+drawInteractiveCalendar(document.querySelector("#calendar"));
+
 function drawCalendar(year, month, htmlEl) {
   const date = new Date(year, month);
   let daysWeek = `<table><tr><td>пн</td><td>вт</td><td>ср</td><td>чт</td><td>пт</td><td>сб</td><td>вс</td></tr><tr>`;
-  const cleartd = () => (date.getDay() === 0 ? 6 : date.getDay() - 1);
-  daysWeek += `${"<td></td>".repeat(cleartd())}`;
-  const indexDay = cleartd();
+  const startDayWeek = date.getDay() === 0 ? 6 : date.getDay() - 1;
+  daysWeek += `${"<td></td>".repeat(startDayWeek)}`;
   while (date.getMonth() === month) {
     daysWeek += `<td>${date.getDate()}</td>`;
-    if ((date.getDate() + indexDay) % 7 === 0) {
+    if ((date.getDate() + startDayWeek) % 7 === 0) {
       daysWeek += `</tr><tr>`;
     }
     date.setDate(date.getDate() + 1);
@@ -74,8 +53,6 @@ function drawCalendar(year, month, htmlEl) {
   daysWeek += `</tr>`;
   htmlEl.innerHTML = daysWeek;
 }
-
-drawInteractiveCalendar(document.querySelector("#calendar"));
 
 function tableClick(e) {
   const target = e.target;
@@ -92,7 +69,6 @@ function tableClick(e) {
 
 document.querySelector("#content").addEventListener("click", tableClick);
 
-//calendar
 const calendarDiv = document.querySelector("#calendar");
 const notesCalendar = document.createElement("div");
 calendarDiv.append(notesCalendar);
@@ -109,10 +85,10 @@ function setTextLocal(textNote) {
 }
 
 function showTextNote() {
-  notesCalendar.innerHTML = "";
-  textNotes.split(",").map((el) => {
-    return (notesCalendar.innerHTML += `<p>${el}</p>`);
-  });
+  notesCalendar.innerHTML = textNotes
+    .split(",")
+    .map((el) => `<p>${el}</p>`)
+    .join("");
 }
 
 document.addEventListener("load", showTextNote());
