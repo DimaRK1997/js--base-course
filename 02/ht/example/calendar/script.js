@@ -51,6 +51,10 @@ function drawInteractiveCalendar(el) {
       el.querySelector(".content")
     );
   });
+  el.addEventListener(
+    "load",
+    showTextNote(el.querySelector(".content-notes"), arrNotes)
+  );
 }
 
 function drawCalendar(year, month, htmlEl) {
@@ -88,5 +92,8 @@ function creatNewCalendar(idNew) {
   document.querySelector("body").appendChild(creatElement);
   drawInteractiveCalendar(document.querySelector(`#${idNew}`));
 }
-creatNewCalendar(getRandId());
-creatNewCalendar(getRandId());
+
+//creatNewCalendar(getRandId()); как сделать чтобы при обновлении не изменялся id
+
+creatNewCalendar("calendar1");
+creatNewCalendar("calendar2");
