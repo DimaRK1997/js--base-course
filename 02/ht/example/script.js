@@ -11,8 +11,27 @@
  * @return {boolean} идентичны ли параметры по содержимому
  */
 function isDeepEqual(objA, objB) {
-  /* Ваше решение */
-  return undefined;
+  if (objA === objB) {
+    return true;
+  } else if (
+    objA !== null &&
+    typeof objA === "object" &&
+    typeof objB === "object" &&
+    objB !== null &&
+    Object.keys(objA).length === Object.keys(objB).length
+  ) {
+    for (let v in objA) {
+      if (!(objA[v] === objA && objB[v] === objB)) {
+        if (!isDeepEqual(objA[v], objB[v])) {
+          return false;
+        }
+      }
+    }
+    return true;
+  } else if (typeof objB === "number" && typeof objA === "number") {
+    return isNaN(objA) && isNaN(objB);
+  }
+  return false;
 }
 
 /**
@@ -22,7 +41,9 @@ function isDeepEqual(objA, objB) {
  * @return {function} функция с зафиксированным контекстом
  */
 function bind(func, context) {
-  return undefined;
+  return function () {
+    return func.apply(context, arguments);
+  };
 }
 
 /**
@@ -31,22 +52,56 @@ function bind(func, context) {
  * (можно использовать фукнцию выше)
  */
 
-/**
-* создать объект с волшебным свойством,
-* чтобы при присвоении ему значения, в консоль выводилась текущая дата и значение, которое присваиваем.
-* А при чтении всегда выводилось число на 1 больше предыдущего
-* o.magicProperty = 5; // 'Sat Mar 24 2018 13:48:47 GMT+0300 (+03) -- 5'
-* console.log(o.magicProperty); // 6
-* console.log(o.magicProperty); // 7
-* console.log(o.magicProperty); // 8
-*/
+Function.prototype.myBind = function (context) {
+  return bind(this, context);
+};
 
 /**
-* Создать конструктор с методами, так,
-* чтобы следующий код работал и делал соответствующие вещи
-* те запуск кода ниже должен делать то, что говорят методы
-* u.askName().askAge().showAgeInConsole().showNameInAlert();
-*/
+ * создать объект с волшебным свойством,
+ * чтобы при присвоении ему значения, в консоль выводилась текущая дата и значение, которое присваиваем.
+ * А при чтении всегда выводилось число на 1 больше предыдущего
+ * o.magicProperty = 5; // 'Sat Mar 24 2018 13:48:47 GMT+0300 (+03) -- 5'
+ * console.log(o.magicProperty); // 6
+ * console.log(o.magicProperty); // 7
+ * console.log(o.magicProperty); // 8
+ */
+
+const o = {
+  count: 0,
+  get magicProperty() {
+    return (this.count += 1);
+  },
+  set magicProperty(value) {
+    this.count = value;
+    console.log(new Date() + "--" + this.count);
+  },
+};
+
+/**
+ * Создать конструктор с методами, так,
+ * чтобы следующий код работал и делал соответствующие вещи
+ * те запуск кода ниже должен делать то, что говорят методы
+ * u.askName().askAge().showAgeInConsole().showNameInAlert();
+ */
+
+function ASK() {
+  this.askName = function () {
+    this.name = prompt("You name?", "");
+    return this;
+  };
+  this.askAge = function () {
+    this.age = prompt("Age?", "");
+    return this;
+  };
+  this.showAgeInConsole = function () {
+    console.log("You name is " + this.age);
+    return this;
+  };
+  this.showNameInAlert = function () {
+    alert("You name is " + this.name);
+    return this;
+  };
+}
 
 /**
  * Написать фукнцию-калькулятор, которая работает следующим образом
@@ -54,8 +109,22 @@ function bind(func, context) {
  * calculate('*')(2)(3); // 6
  * Допустимые операции : + - * /
  */
-function calculate() {
-  /* put your code here */
+
+function calculate(z) {
+  return function (a) {
+    return function (b) {
+      switch (z) {
+        case "+":
+          return a + b;
+        case "*":
+          return a * b;
+        case "-":
+          return a - b;
+        case "/":
+          return a / b;
+      }
+    };
+  };
 }
 
 /**
@@ -63,17 +132,24 @@ function calculate() {
  * new Singleton() === new Singleton
  */
 function Singleton() {
-  throw 'undefined';
+  if (Singleton.self === undefined) {
+    Singleton.self = this;
+  }
+  return Singleton.self;
 }
-
 /**
-  * Создайте функцию ForceConstructor
-  * которая работает как конструктор независимо от того,
-  * вызвана она с new или без
-  * и сохраняет параметры в создаваемый объект с именами параметров
-  */
+ * Создайте функцию ForceConstructor
+ * которая работает как конструктор независимо от того,
+ * вызвана она с new или без
+ * и сохраняет параметры в создаваемый объект с именами параметров
+ */
 function ForceContructor(a, b, c) {
-  throw 'undefined';
+  this.a = a;
+  this.b = b;
+  this.c = c;
+  if (!new.target) {
+    return new ForceContructor(a, b, c);
+  }
 }
 
 /**
@@ -85,8 +161,18 @@ function ForceContructor(a, b, c) {
  * log(s(3)(4)(5)); // 12
  * Число вызовов может быть неограниченым
  */
-function sum() {
-  throw 'undefined';
+function sum(a) {
+  let res = a || 0;
+
+  function f(b) {
+    b = b || 0;
+    return sum(res + b);
+  }
+  f.toString = function () {
+    return res;
+  };
+
+  return f;
 }
 
 function log(x) {
@@ -110,17 +196,61 @@ function log(x) {
  * https://github.com/MostlyAdequate/mostly-adequate-guide-ru/blob/master/ch4-ru.md
  * @param {*} func
  */
-function curry(func) {}
+
+function target1(a, b, c, d) {
+  return a + b + c + d;
+}
+
+function target2(a, b, c) {
+  return a + b + c;
+}
+
+function target3(a, b) {
+  return a + b;
+}
+
+function curry(func) {
+  let arr = [];
+  return function check(a) {
+    arr.push(a);
+    if (arr.length < func.length) {
+      return check;
+    } else {
+      return arr.reduce((a, b) => a + b);
+    }
+  };
+}
 
 /*
 Написать код, который для объекта созданного с помощью конструктора будет показывать,
 что объект является экземпляром двух классов
 */
+
+function User() {}
+
+function PreUser() {}
+
+User.prototype = Array.prototype;
+PreUser.prototype = Array.prototype;
+
 /* Тут ваш код */
 // User === PreUser; // false
 // u instanceof User; // true
 // u instanceof Array; // true
 // u instanceof PreUser; // true
+
+// sleep
+console.log(new Date());
+sleep(3);
+console.log(new Date());
+
+function sleep(seconds) {
+  const start = new Date().getTime() + seconds * 1000;
+  let finish = new Date().getTime();
+  while (finish <= start) {
+    finish = new Date().getTime();
+  }
+}
 
 /*
 Создать веб страницу. Добавить на нее форму с полями
@@ -139,4 +269,3 @@ function curry(func) {}
 При клике по кнопкам [<] / [>] нужно реализовать листание календаря
 Добавть на страницу index.html вызов календаря
 */
-function drawInteractiveCalendar(el) {}
