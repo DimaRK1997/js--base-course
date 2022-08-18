@@ -83,17 +83,60 @@ function showTextNote(notesCalendar, arrNotes) {
 }
 
 function getRandId() {
-  return `n${Math.random() * 10 ** 17}`;
+  return `n${Math.random() * 10 ** 18}`;
 }
 
-function creatNewCalendar(idNew) {
+function createNewCalendar(idNew) {
   const creatElement = document.createElement("div");
   creatElement.id = idNew;
   document.querySelector("body").appendChild(creatElement);
   drawInteractiveCalendar(document.querySelector(`#${idNew}`));
 }
 
-//creatNewCalendar(getRandId()); как сделать чтобы при обновлении не изменялся id
 
-creatNewCalendar("calendar1");
-creatNewCalendar("calendar2");
+
+const arrCalendars = JSON.parse(localStorage.getItem("calendars")) || [];
+//console.log(arrCalendars == '')
+
+//creatNewCalendar(getRandId()); как сделать чтобы при обновлении не изменялся id
+//console.log(typeof arrCalendars)
+function createCalendars() {
+  //console.log(arrCalendars == "")
+  if(arrCalendars == "") {
+    const idNew = getRandId();
+    arrCalendars.push(idNew)
+    localStorage.setItem("calendars", JSON.stringify(arrCalendars));
+    createNewCalendar(idNew)
+    return
+  } else {
+    arrCalendars.map((el) => {
+      if(el) {
+        createNewCalendar(el);
+        const idNew = getRandId();
+        arrCalendars.push(idNew)
+        localStorage.setItem("calendars", JSON.stringify(arrCalendars));
+        createNewCalendar(idNew)
+        console.log(arrCalendars)
+        return
+      } else {
+        const idNew = getRandId();
+        arrCalendars.push(idNew)
+        localStorage.setItem("calendars", JSON.stringify(arrCalendars));
+        createNewCalendar(idNew)
+      } 
+    })
+  }
+}
+
+
+
+
+
+createCalendars()
+createCalendars()
+
+
+
+
+
+
