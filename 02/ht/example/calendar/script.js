@@ -1,29 +1,46 @@
 function drawInteractiveCalendar(el) {
-  let titleCalendar = `<table id="title">
+  let titleCalendar = `<table class="title">
                           <tr>
-                            <td><button id="last"><</button></td><td><span id="month"></span>/<span id="year"></span></td><td><button id="next">></button></td>
+                            <td><button class="last"><</button></td><td><span class="month"></span>/<span class="year"></span></td><td><button class="next">></button></td>
                           </tr>
                         </table>
-                        <div id="content"></div>`;
+                        <div class="content"></div>
+                        <div class="content-notes"></div>`;
   el.innerHTML = titleCalendar;
+
+  const titleElement = el.querySelector(".title");
+  const monthElement = el.querySelector(".month");
+  const yearElement = el.querySelector(".year");
+
   const date = new Date();
   drawCalendar(
     date.getFullYear(),
     date.getMonth(),
-    document.querySelector("#content")
+    el.querySelector(".content")
   );
 
-  const titleElement = document.querySelector("#title");
-  const monthElement = document.querySelector("#month");
-  const yearElement = document.querySelector("#year");
+  const arrNotes = JSON.parse(localStorage.getItem(`${el.id}`)) || [];
+
+  el.querySelector(".content").addEventListener("click", function (e) {
+    const target = e.target;
+    if (Number(target.textContent)) {
+      const eventDate = prompt(`Заметка на ${target.textContent}`, "");
+      if (!eventDate) return;
+      const noteDate = `${target.textContent}.${
+        el.querySelector(".month").textContent
+      }.${el.querySelector(".year").textContent}: ${eventDate}`;
+      setTextLocal(noteDate, el, arrNotes);
+      showTextNote(el.querySelector(".content-notes"), arrNotes);
+    }
+  });
 
   monthElement.textContent = date.getMonth() + 1;
   yearElement.textContent = date.getFullYear();
 
   titleElement.addEventListener("click", function (e) {
-    if (e.target.matches("#last")) {
+    if (e.target.matches(".last")) {
       date.setMonth(date.getMonth() - 1);
-    } else if (e.target.matches("#next")) {
+    } else if (e.target.matches(".next")) {
       date.setMonth(date.getMonth() + 1);
     }
     monthElement.textContent = date.getMonth() + 1;
@@ -31,12 +48,10 @@ function drawInteractiveCalendar(el) {
     drawCalendar(
       date.getFullYear(),
       date.getMonth(),
-      document.querySelector("#content")
+      el.querySelector(".content")
     );
   });
 }
-
-drawInteractiveCalendar(document.querySelector("#calendar"));
 
 function drawCalendar(year, month, htmlEl) {
   const date = new Date(year, month);
@@ -54,34 +69,24 @@ function drawCalendar(year, month, htmlEl) {
   htmlEl.innerHTML = daysWeek;
 }
 
-function tableClick(e) {
-  const target = e.target;
-  if (Number(target.textContent)) {
-    const eventDate = prompt(`Заметка на ${target.textContent}`, "");
-    if (!eventDate) return;
-    const noteDate = `${target.textContent}.${
-      document.getElementById("month").textContent
-    }.${document.getElementById("year").textContent}: ${eventDate}`;
-    setTextLocal(noteDate);
-    showTextNote();
-  }
-}
-
-document.querySelector("#content").addEventListener("click", tableClick);
-
-const calendarDiv = document.querySelector("#calendar");
-const notesCalendar = document.createElement("div");
-calendarDiv.append(notesCalendar);
-
-const arrNotes = JSON.parse(localStorage.getItem("notedays")) || [];
-
-function setTextLocal(textNote) {
+function setTextLocal(textNote, element, arrNotes) {
   arrNotes.push(textNote);
-  localStorage.setItem("notedays", JSON.stringify(arrNotes));
+  localStorage.setItem(element.id, JSON.stringify(arrNotes));
 }
 
-function showTextNote() {
-  notesCalendar.innerHTML = arrNotes.map((el) => `<p>${el}</p>`).join("");
+function showTextNote(notesCalendar, arrNotes) {
+  notesCalendar.innerHTML = arrNotes.map((note) => `<p>${note}</p>`).join("");
 }
 
-document.addEventListener("load", showTextNote());
+function getRandId() {
+  return `n${Math.random() * 10 ** 17}`;
+}
+
+function creatNewCalendar(idNew) {
+  const creatElement = document.createElement("div");
+  creatElement.id = idNew;
+  document.querySelector("body").appendChild(creatElement);
+  drawInteractiveCalendar(document.querySelector(`#${idNew}`));
+}
+creatNewCalendar(getRandId());
+creatNewCalendar(getRandId());
