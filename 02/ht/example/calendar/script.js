@@ -72,18 +72,16 @@ document.querySelector("#content").addEventListener("click", tableClick);
 const calendarDiv = document.querySelector("#calendar");
 const notesCalendar = document.createElement("div");
 calendarDiv.append(notesCalendar);
-let textNotes = localStorage.getItem("notedays") || "";
+
+const arrNotes = JSON.parse(localStorage.getItem("notedays")) || [];
 
 function setTextLocal(textNote) {
-  textNotes += `${textNote},`;
-  localStorage.setItem("notedays", textNotes);
+  arrNotes.push(textNote);
+  localStorage.setItem("notedays", JSON.stringify(arrNotes));
 }
 
 function showTextNote() {
-  notesCalendar.innerHTML = textNotes
-    .split(",")
-    .map((el) => `<p>${el}</p>`)
-    .join("");
+  notesCalendar.innerHTML = arrNotes.map((el) => `<p>${el}</p>`).join("");
 }
 
 document.addEventListener("load", showTextNote());
