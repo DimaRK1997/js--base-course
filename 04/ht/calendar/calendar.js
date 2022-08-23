@@ -1,58 +1,42 @@
 function Calendar(options) {
-  this.element = document.querySelector(options.el);
-  this.setShowMonth = showMonth;
-  this.setAllowAdd = allowAdd;
-  this.setAllowRemove = allowRemove;
+  localStorage.setItem("objOptions", JSON.stringify(options));
+  this.element = document.querySelector("#" + options.el);
+  this.setShowMonth = showMonth(options.showMonth);
+  this.setAllowAdd = allowAdd(options.allowAdd);
+  this.setAllowRemove = allowRemove(options.allowRemove);
   this.setMonthDate = month;
   this.setYearDate = year;
 }
 
-function showMonth(bool) {
-  const res = bool === true ? console.log("true") : console.log("false");
-  return res;
+function showMonth(option) {
+  //if (option) console.log("запустить функцию showMonth");
 }
 
-function allowAdd(bool) {
-  const res = bool === true ? console.log("true") : console.log("false");
-  return res;
+function allowAdd(option) {
+  //if (option) console.log("запустить функцию allowAdd");
 }
 
-function allowRemove(bool) {
-  const res = bool === true ? console.log("true") : console.log("false");
-  return res;
+function allowRemove(option) {
+  //if (option) console.log("запустить функцию allowRemove");
 }
 
-function month(bool) {
-  const res = bool === true ? console.log("true") : console.log("false");
-  return res;
-}
-function year(bool) {
-    const res = bool === true ? console.log("true") : console.log("false");
-    return res;
-  }
-// const inst = new Calendar({
-//     el: "#" + id,
-//     showMonth: false,
-//     allowAdd: false,
-//     allowRemove: true,
-//     date: null,
-// });
-
-// console.log(inst);
+function month(bool) {}
+function year(bool) {}
 
 function drawInteractiveCalendar(el) {
-  el.innerHTML = `<table class="title">
-                            <tr>
-                              <td><button class="last"><</button></td><td><span class="month"></span>/<span class="year"></span></td><td><button class="next">></button></td>
-                            </tr>
-                          </table>
-                          <div class="content"></div>
+  el.innerHTML = `<div class="title">
+<button class="last"><</button>
+<span class="month"></span>/<span class="year"></span>
+<button class="next">></button>
+                        
+                          </div>
+                          <div class="content_calendar"></div>
                           <div class="content-notes"></div>`;
 
   const headerElement = el.querySelector(".title");
   const monthElement = el.querySelector(".month");
   const yearElement = el.querySelector(".year");
-  const contentElement = el.querySelector(".content");
+  const contentElement = el.querySelector(".content_calendar");
 
   const date = new Date();
 
@@ -117,6 +101,7 @@ function getRandId() {
 }
 
 function createNewCalendar(idNew) {
+  if (document.querySelector(`#${idNew}`)) document.querySelector(`#${idNew}`).remove();
   const creatElement = document.createElement("div");
   creatElement.id = idNew;
   document.querySelector("body").appendChild(creatElement);
