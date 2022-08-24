@@ -52,7 +52,9 @@ function showCalendarCreate() {
           <label for="change">allow change month</label><br />
           <input type="checkbox" id="add" name="allowAdd" value="true" ${objOptions.allowAdd ? "checked" : ""}/>
           <label for="add">allow add tasks</label><br />
-          <input type="checkbox" id="remove" name="allowRemove" value="true" ${objOptions.allowRemove ? "checked" : ""}/>
+          <input type="checkbox" id="remove" name="allowRemove" value="true" ${
+            objOptions.allowRemove ? "checked" : ""
+          }/>
           <label for="remove">allow remove tasks</label><br />
           <input type="checkbox" id="date" name="date" value="true" ${objOptions.date ? "checked" : ""}/>
           <label for="date">show month / year</label><br />
@@ -65,24 +67,23 @@ function showCalendarCreate() {
         </fieldset>
       </form>`;
 
-    // const formElement = document.querySelector("form");
+    const formElement = document.querySelector("form");
 
-    // formElement.addEventListener("change", function (e) {
-
-    //   e.preventDefault();
-    //   getFormData(formElement);
-    //   //formElement.reset();
-    //   document.querySelector('textarea').textContent = '';
-    //   document.querySelector('textarea').textContent = `
-    // `
-    // });
+    formElement.addEventListener("change", function (e) {
+      e.preventDefault();
+      getFormData(formElement);
+      //formElement.reset();
+      document.querySelector("textarea").textContent = "";
+      document.querySelector("textarea").textContent = `
+    `;
+    });
   });
 }
 
-// function getFormData(formElement) {
-//   const form = new FormData(formElement);
-//   const setings = Object.fromEntries(form);
-//   new Calendar(setings);
-// }
+function getFormData(formElement) {
+  const form = new FormData(formElement);
+  const setings = Object.fromEntries(form);
+  console.log(setings);
+}
 
 showCalendarCreate();
