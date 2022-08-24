@@ -36,7 +36,7 @@ function showCalendarCreate() {
     divContentElement.appendChild(divCreate);
     document.querySelector(".content__textarea-calendar").innerHTML = `
     <div class="content_textarea">
-    <textarea></textarea>
+    <textarea disabled></textarea>
     </div>
     <div class="content_calendar">
       <div id="${objOptions.el}"></div>
@@ -47,21 +47,21 @@ function showCalendarCreate() {
     document.querySelector(".content__setings").innerHTML = `
       <form>
         <fieldset>
-        <legend>Configure Calendar</legend>
-        <input type="checkbox" id="change" name="showMonth" value="true" ${objOptions.showMonth ? "checked" : ""}/>
-        <label for="change">allow change month</label><br />
-        <input type="checkbox" id="add" name="allowAdd" value="true" ${objOptions.allowAdd ? "checked" : ""}/>
-        <label for="add">allow add tasks</label><br />
-        <input type="checkbox" id="remove" name="allowRemove" value="true" ${objOptions.allowRemove ? "checked" : ""}/>
-        <label for="remove">allow remove tasks</label><br />
-        <input type="checkbox" id="date" name="date" value="true" ${objOptions.date ? "checked" : ""}/>
-        <label for="date">show month / year</label><br />
-        <label for="month">month:</label>
-        <input type="number" id="month" name="month" value="${date.getMonth() + 1}" required /><br />
-        <label for="year">year:</label>
-        <input type="number" id="year" name="year" value="${date.getFullYear()}" required /><br />
-        <label for="id-text">id:</label>
-        <input type="text" id="id-text" name="el" value="${objOptions.el || ""}" required /><br />
+          <legend>Configure Calendar</legend>
+          <input type="checkbox" id="change" name="showMonth" value="true" ${objOptions.showMonth ? "checked" : ""}/>
+          <label for="change">allow change month</label><br />
+          <input type="checkbox" id="add" name="allowAdd" value="true" ${objOptions.allowAdd ? "checked" : ""}/>
+          <label for="add">allow add tasks</label><br />
+          <input type="checkbox" id="remove" name="allowRemove" value="true" ${objOptions.allowRemove ? "checked" : ""}/>
+          <label for="remove">allow remove tasks</label><br />
+          <input type="checkbox" id="date" name="date" value="true" ${objOptions.date ? "checked" : ""}/>
+          <label for="date">show month / year</label><br />
+          <label for="month">month:</label>
+          <input type="number" id="month" name="month" value="${date.getMonth() + 1}" required /><br />
+          <label for="year">year:</label>
+          <input type="number" id="year" name="year" value="${date.getFullYear()}" required /><br />
+          <label for="id-text">id:</label>
+          <input type="text" id="id-text" name="el" value="${objOptions.el || ""}" required /><br />
         </fieldset>
       </form>`;
 

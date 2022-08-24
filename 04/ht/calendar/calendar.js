@@ -24,19 +24,21 @@ function month(bool) {}
 function year(bool) {}
 
 function drawInteractiveCalendar(el) {
-  el.innerHTML = `<div class="title">
-<button class="last"><</button>
-<span class="month"></span>/<span class="year"></span>
-<button class="next">></button>
-                        
-                          </div>
-                          <div class="content_calendar"></div>
-                          <div class="content-notes"></div>`;
+  el.innerHTML = `
+<div class="title">
+  <button class="last">&#11164;</button>
+  <div class="text-date">
+    <span class="month"></span>/<span class="year"></span>
+  </div>
+  <button class="next">&#11166;</button>
+</div>
+<div class="table_calendar"></div>
+<div class="content-notes"></div>`;
 
   const headerElement = el.querySelector(".title");
   const monthElement = el.querySelector(".month");
   const yearElement = el.querySelector(".year");
-  const contentElement = el.querySelector(".content_calendar");
+  const contentElement = el.querySelector(".table_calendar");
 
   const date = new Date();
 
