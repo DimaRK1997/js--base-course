@@ -1,19 +1,21 @@
-const settingsCalendar = JSON.parse(localStorage.getItem("settingsCalendar"));
-
-const divCalendarTextarea = document.querySelector(".content__calendar-textarea");
-const links = document.querySelector(".content__links");
-
 const instCalend = new Calendar({
-  el: "сalendar12",
+  //el: "cal",
   showMonth: true,
   allowAdd: false,
   allowRemove: true,
   date: null,
 });
 
+const divCalendarTextarea = document.querySelector(".content__calendar-textarea");
+const links = document.querySelector(".content__links");
+
+const settingsCalendar = JSON.parse(localStorage.getItem("settingsCalendar"));
+
+const idCalendar = settingsCalendar.el;
+
 const pages = {
-  calendarlink: pageCalendar,
-  createlink: pageCreate,
+  calendar: pageCalendar,
+  create: pageCreate,
 };
 
 function showLinks() {
@@ -26,9 +28,9 @@ function pageCalendar() {
   if (document.querySelector(".content__settings")) {
     document.querySelector(".content__settings").remove();
   }
-  instCalend.element(settingsCalendar.el);
+  instCalend.element(idCalendar);
 
-  document.getElementById(settingsCalendar.el).classList.toggle("calendar");
+  document.getElementById(idCalendar).classList.toggle("calendar");
 }
 
 function pageCreate() {
@@ -41,7 +43,7 @@ function pageCreate() {
       <textarea disabled></textarea>
     </div>
     `;
-  instCalend.element(settingsCalendar.el);
+  instCalend.element(idCalendar);
 
   const settings = document.createElement("div");
   settings.classList = "content__settings";
@@ -68,11 +70,11 @@ function pageCreate() {
           <label for="year">year:</label>
           <input type="number" id="year" name="year" value="${date.getFullYear()}" required /><br />
           <label for="id-text">id:</label>
-          <input type="text" id="id-text" name="el" value="${settingsCalendar.el || ""}" required /><br />
+          <input type="text" id="id-text" name="el" value="${idCalendar || ""}" required /><br />
         </fieldset>
       </form>`;
 
-  document.getElementById(settingsCalendar.el).classList.toggle("calendar-small");
+  document.getElementById(idCalendar).classList.toggle("calendar-small");
 }
 
 window.addEventListener("hashchange", showLinks);

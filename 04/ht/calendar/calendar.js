@@ -1,5 +1,5 @@
 function Calendar(options) {
-  localStorage.setItem("settingsCalendar", JSON.stringify(options));
+  this.id = idCheck(options);
   this.element = createNewCalendar;
   this.setShowMonth = showMonth(options.showMonth);
   this.setAllowAdd = allowAdd(options.allowAdd);
@@ -129,7 +129,16 @@ function createNewCalendar(idNew) {
 }
 
 function createCalendars() {
-  const arrCalendars = JSON.parse(localStorage.getItem("calendars")) || [getRandId(), getRandId()];
+  const arrCalendars = JSON.parse(localStorage.getItem("calendars")) || getRandId();
   arrCalendars.map((id) => createNewCalendar(id));
   localStorage.setItem("calendars", JSON.stringify(arrCalendars));
+}
+
+function idCheck(options) {
+  if (options.el) {
+    localStorage.setItem("settingsCalendar", JSON.stringify(options));
+  } else {
+    options.el = getRandId();
+    localStorage.setItem("settingsCalendar", JSON.stringify(options));
+  }
 }
