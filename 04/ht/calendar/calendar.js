@@ -1,6 +1,6 @@
 function Calendar(options) {
-  localStorage.setItem("objOptions", JSON.stringify(options));
-  this.element = document.querySelector("#" + options.el);
+  localStorage.setItem("settingsCalendar", JSON.stringify(options));
+  this.element = createNewCalendar;
   this.setShowMonth = showMonth(options.showMonth);
   this.setAllowAdd = allowAdd(options.allowAdd);
   this.setAllowRemove = allowRemove(options.allowRemove);
@@ -78,7 +78,7 @@ function drawCalendarTable(year, month, htmlEl) {
   const datelast = new Date(year, month, 0);
   const date = new Date(year, month);
 
-  let table = `<table><tr><td>пн</td><td>вт</td><td>ср</td><td>чт</td><td>пт</td><td>сб</td><td>вс</td></tr><tr>`;
+  let table = `<table><tr class="day-week"><td>пн</td><td>вт</td><td>ср</td><td>чт</td><td>пт</td><td>сб</td><td>вс</td></tr><tr>`;
   const startDayWeek = date.getDay() === 0 ? 6 : date.getDay() - 1;
 
   for (let i = datelast.getDate() - startDayWeek + 1; i <= datelast.getDate(); i++) {
@@ -122,10 +122,9 @@ function getRandId() {
 }
 
 function createNewCalendar(idNew) {
-  if (document.querySelector(`#${idNew}`)) document.querySelector(`#${idNew}`).remove();
   const creatElement = document.createElement("div");
   creatElement.id = idNew;
-  document.querySelector("body").appendChild(creatElement);
+  document.querySelector(".content__calendar-textarea").appendChild(creatElement);
   drawInteractiveCalendar(document.querySelector(`#${idNew}`));
 }
 
@@ -134,40 +133,3 @@ function createCalendars() {
   arrCalendars.map((id) => createNewCalendar(id));
   localStorage.setItem("calendars", JSON.stringify(arrCalendars));
 }
-
-// createCalendars();
-
-// function drawCalendarTable(year, month, htmlEl) {
-//   const datelast = new Date(year, month, 0);
-//   //datelast.getDate()
-//   console.log(datelast.getDate())
-//   const date = new Date(year, month);
-
-//   let table = `<table><tr><td>пн</td><td>вт</td><td>ср</td><td>чт</td><td>пт</td><td>сб</td><td>вс</td></tr><tr>`;
-//   const startDayWeek = date.getDay() === 0 ? 6 : date.getDay() - 1;
-//   //date.setMonth();
-//   for (let i = datelast.getDate() - startDayWeek + 1; i <= datelast.getDate(); i++) {
-//     table += `<td class="day_no-active">${i}</td>`;
-//   }
-//   let daysMonth = 0;
-//   //table += `${"<td></td>".repeat(startDayWeek)}`;
-//   while (date.getMonth() === month) {
-//     table += `<td>${date.getDate()}</td>`;
-//     if (((date.getDate() + startDayWeek) % 7 === 0)) {
-//       table += `</tr><tr>`;
-//     }
-//     date.setDate(date.getDate() + 1);
-//     daysMonth++;
-//   }
-
-//   const addTDtable = 42 - startDayWeek - daysMonth;
-//   for (let i = 1; i <= addTDtable; i++) {
-//     if (i === addTDtable - 6 && i !== 36) {
-//       table += `</tr><tr>`;
-//     }
-//     table += `<td class="day_no-active">${i}</td>`;
-//   }
-
-//   table += `</tr></table>`;
-//   htmlEl.innerHTML = table;
-// }

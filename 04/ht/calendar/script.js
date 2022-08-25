@@ -1,89 +1,79 @@
-// настройки и изображение
-const objOptions = JSON.parse(localStorage.getItem("objOptions"));
+const settingsCalendar = JSON.parse(localStorage.getItem("settingsCalendar"));
 
-function showCalendarCreate() {
-  const linkCalendar = document.querySelector("#link-calendar");
-  const linkCreate = document.querySelector("#link-create");
-  document.querySelector(`#${objOptions.el}`).classList = "calendar";
-  drawInteractiveCalendar(document.querySelector(`#${objOptions.el}`));
+const divCalendarTextarea = document.querySelector(".content__calendar-textarea");
+const links = document.querySelector(".content__links");
 
-  linkCalendar.addEventListener("click", function (e) {
-    e.preventDefault();
-    if (document.querySelector(".content__setings")) document.querySelector(".content__setings").remove();
-    if (document.querySelector(".content__textarea-calendar"))
-      document.querySelector(".content__textarea-calendar").remove();
-    createNewCalendar(objOptions.el);
-    document.querySelector(`#${objOptions.el}`).classList = "calendar";
-  });
+const instCalend = new Calendar({
+  el: "сalendar12",
+  showMonth: true,
+  allowAdd: false,
+  allowRemove: true,
+  date: null,
+});
 
-  linkCreate.addEventListener("click", function (e) {
-    e.preventDefault();
-    if (document.querySelector(".content__setings")) document.querySelector(".content__setings").remove();
-    if (document.querySelector(".content__textarea-calendar"))
-      document.querySelector(".content__textarea-calendar").remove();
+const pages = {
+  calendarlink: pageCalendar,
+  createlink: pageCreate,
+};
 
-    if (document.querySelector(`#${objOptions.el}`)) document.querySelector(`#${objOptions.el}`).remove();
-    const date = new Date();
+function showLinks() {
+  const page = location.href.split("#")[1];
+  (pages[page] || pageCalendar)();
+}
 
-    const divContentElement = document.querySelector(".content");
+function pageCalendar() {
+  divCalendarTextarea.innerHTML = "";
+  if (document.querySelector(".content__settings")) {
+    document.querySelector(".content__settings").remove();
+  }
+  instCalend.element(settingsCalendar.el);
 
-    const divSetingsElement = document.createElement("div");
-    divSetingsElement.classList = "content__setings";
-    divContentElement.appendChild(divSetingsElement);
+  document.getElementById(settingsCalendar.el).classList.toggle("calendar");
+}
 
-    const divCreate = document.createElement("div");
-    divCreate.classList = "content__textarea-calendar";
-    divContentElement.appendChild(divCreate);
-    document.querySelector(".content__textarea-calendar").innerHTML = `
-    <div class="content_textarea">
-    <textarea disabled></textarea>
+function pageCreate() {
+  divCalendarTextarea.innerHTML = "";
+
+  const date = new Date();
+
+  divCalendarTextarea.innerHTML = `
+    <div class="textarea">
+      <textarea disabled></textarea>
     </div>
-    <div class="content_calendar">
-      <div id="${objOptions.el}"></div>
-    </div>`;
-    document.querySelector(`#${objOptions.el}`).classList = "calendar";
-    drawInteractiveCalendar(document.querySelector(`#${objOptions.el}`));
+    `;
+  instCalend.element(settingsCalendar.el);
 
-    document.querySelector(".content__setings").innerHTML = `
+  const settings = document.createElement("div");
+  settings.classList = "content__settings";
+  divCalendarTextarea.parentNode.insertBefore(settings, divCalendarTextarea);
+
+  settings.innerHTML = `
       <form>
         <fieldset>
           <legend>Configure Calendar</legend>
-          <input type="checkbox" id="change" name="showMonth" value="true" ${objOptions.showMonth ? "checked" : ""}/>
+          <input type="checkbox" id="change" name="showMonth" value="true" ${
+            settingsCalendar.showMonth ? "checked" : ""
+          }/>
           <label for="change">allow change month</label><br />
-          <input type="checkbox" id="add" name="allowAdd" value="true" ${objOptions.allowAdd ? "checked" : ""}/>
+          <input type="checkbox" id="add" name="allowAdd" value="true" ${settingsCalendar.allowAdd ? "checked" : ""}/>
           <label for="add">allow add tasks</label><br />
           <input type="checkbox" id="remove" name="allowRemove" value="true" ${
-            objOptions.allowRemove ? "checked" : ""
+            settingsCalendar.allowRemove ? "checked" : ""
           }/>
           <label for="remove">allow remove tasks</label><br />
-          <input type="checkbox" id="date" name="date" value="true" ${objOptions.date ? "checked" : ""}/>
+          <input type="checkbox" id="date" name="date" value="true" ${settingsCalendar.date ? "checked" : ""}/>
           <label for="date">show month / year</label><br />
           <label for="month">month:</label>
           <input type="number" id="month" name="month" value="${date.getMonth() + 1}" required /><br />
           <label for="year">year:</label>
           <input type="number" id="year" name="year" value="${date.getFullYear()}" required /><br />
           <label for="id-text">id:</label>
-          <input type="text" id="id-text" name="el" value="${objOptions.el || ""}" required /><br />
+          <input type="text" id="id-text" name="el" value="${settingsCalendar.el || ""}" required /><br />
         </fieldset>
       </form>`;
 
-    const formElement = document.querySelector("form");
-
-    formElement.addEventListener("change", function (e) {
-      e.preventDefault();
-      getFormData(formElement);
-      //formElement.reset();
-      document.querySelector("textarea").textContent = "";
-      document.querySelector("textarea").textContent = `
-    `;
-    });
-  });
+  document.getElementById(settingsCalendar.el).classList.toggle("calendar-small");
 }
 
-function getFormData(formElement) {
-  const form = new FormData(formElement);
-  const setings = Object.fromEntries(form);
-  console.log(setings);
-}
-
-showCalendarCreate();
+window.addEventListener("hashchange", showLinks);
+window.addEventListener("load", showLinks);

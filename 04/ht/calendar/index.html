@@ -10,25 +10,12 @@
   <body>
     <div class="content">
       <div class="content__links">
-        <a id="link-calendar" href="">Calendar</a> | 
-        <a id="link-create" href="">Create</a>
+        <a href="#calendarlink">Calendar</a> |
+        <a href="#createlink">Create</a>
       </div>
+      <div class="content__calendar-textarea"></div>
     </div>
     <script src="./calendar.js"></script>
-    <script>
-      (function () {
-        var id = "calendar123";
-        document.write('<div id="' + id + '"></div>');
-        new Calendar({
-          el: id,
-          showMonth: true,
-          allowAdd: false,
-          allowRemove: true,
-          date: null, // date = [2017, 11]
-        });
-      })();
-    </script>
-    
     <script src="./script.js"></script>
   </body>
 </html>
