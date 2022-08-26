@@ -1,11 +1,18 @@
+class Storage {
+  setData(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+  getData(key) {
+    return JSON.parse(localStorage.getItem(key));
+  }
+}
+
+const storage = new Storage();
+
 function Calendar(options) {
+  storage.setData("settingsCalendar", options);
   this.id = idCheck(options);
-  this.element = createNewCalendar;
-  this.setShowMonth = showMonth(options.showMonth);
-  this.setAllowAdd = allowAdd(options.allowAdd);
-  this.setAllowRemove = allowRemove(options.allowRemove);
-  this.setMonthDate = month;
-  this.setYearDate = year;
+  this.createCalendar = createNewCalendar(this.id);
 }
 
 function showMonth(option) {
@@ -20,20 +27,17 @@ function allowRemove(option) {
   //if (option) console.log("запустить функцию allowRemove");
 }
 
-function month(bool) {}
-function year(bool) {}
-
 function drawInteractiveCalendar(el) {
   el.innerHTML = `
-<div class="title">
-  <button class="last">&#11164;</button>
-  <div class="text-date">
-    <span class="month"></span>/<span class="year"></span>
-  </div>
-  <button class="next">&#11166;</button>
-</div>
-<div class="table_calendar"></div>
-<div class="content-notes"></div>`;
+    <div class="title">
+      <button class="last">&#11164;</button>
+      <div class="text-date">
+        <span class="month"></span>/<span class="year"></span>
+      </div>
+      <button class="next">&#11166;</button>
+    </div>
+    <div class="table_calendar"></div>
+    <div class="content-notes"></div>`;
 
   const headerElement = el.querySelector(".title");
   const monthElement = el.querySelector(".month");
@@ -124,21 +128,12 @@ function getRandId() {
 function createNewCalendar(idNew) {
   const creatElement = document.createElement("div");
   creatElement.id = idNew;
-  document.querySelector(".content__calendar-textarea").appendChild(creatElement);
+  document.querySelector(".calendar-textarea").appendChild(creatElement);
   drawInteractiveCalendar(document.querySelector(`#${idNew}`));
 }
 
-function createCalendars() {
-  const arrCalendars = JSON.parse(localStorage.getItem("calendars")) || getRandId();
-  arrCalendars.map((id) => createNewCalendar(id));
-  localStorage.setItem("calendars", JSON.stringify(arrCalendars));
-}
-
 function idCheck(options) {
-  if (options.el) {
-    localStorage.setItem("settingsCalendar", JSON.stringify(options));
-  } else {
-    options.el = getRandId();
-    localStorage.setItem("settingsCalendar", JSON.stringify(options));
-  }
+  options.el = options.el || getRandId();
+  storage.setData("settingsCalendar", options);
+  return options.el;
 }
