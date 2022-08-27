@@ -1,5 +1,4 @@
 const calendarElement = document.querySelector(".content__calendar");
-const links = document.querySelector(".content__links");
 
 const pages = {
   calendar: pageCalendar,
@@ -12,7 +11,6 @@ function showPages() {
 }
 
 function pageCalendar() {
-  calendarElement.innerHTML = "";
   calendarElement.innerHTML = `
   <div class="calendar-textarea"></div>`;
 
@@ -28,8 +26,6 @@ function pageCalendar() {
 }
 
 function pageCreate() {
-  calendarElement.innerHTML = "";
-
   const date = new Date();
 
   calendarElement.innerHTML = `

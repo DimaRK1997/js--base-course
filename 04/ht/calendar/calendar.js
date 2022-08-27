@@ -3,14 +3,15 @@ class Storage {
     localStorage.setItem(key, JSON.stringify(value));
   }
   getData(key) {
-    return JSON.parse(localStorage.getItem(key));
+    return new Promise((resolve, reject) => {
+      JSON.parse(localStorage.getItem(key)) ? resolve() : reject();
+    })
+      .then()
+      .catch(() => console.error("Ошибка загрузки данных из localStorage"));
   }
 }
 
-const storage = new Storage();
-
 function Calendar(options) {
-  storage.setData("settingsCalendar", options);
   this.id = idCheck(options);
   this.createCalendar = createNewCalendar(this.id);
 }
@@ -52,7 +53,6 @@ function drawInteractiveCalendar(el) {
 
   contentElement.addEventListener("click", function (e) {
     const target = e.target;
-    console.log();
     if (Number(target.textContent) && !target.classList.contains("day_no-active")) {
       const eventDate = prompt(`Заметка на ${target.textContent}`, "");
       if (!eventDate) return;
@@ -132,8 +132,10 @@ function createNewCalendar(idNew) {
   drawInteractiveCalendar(document.querySelector(`#${idNew}`));
 }
 
-function idCheck(options) {
-  options.el = options.el || getRandId();
-  storage.setData("settingsCalendar", options);
-  return options.el;
+function idCheck(obj) {
+  obj.el = obj.el || getRandId();
+  const storage = new Storage();
+  storage.setData("settingsCalendar", obj);
+  const localOptions = storage.getData("settingsCalendar");
+  return localOptions.el;
 }
