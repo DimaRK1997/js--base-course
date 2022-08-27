@@ -3,13 +3,11 @@ class Storage {
     localStorage.setItem(key, JSON.stringify(value));
   }
   getData(key) {
-    return new Promise((resolve, reject) => {
-      JSON.parse(localStorage.getItem(key)) ? resolve() : reject();
-    })
-      .then()
-      .catch(() => console.error("Ошибка загрузки данных из localStorage"));
+    return JSON.parse(localStorage.getItem(key));
   }
 }
+
+const storage = new Storage();
 
 function Calendar(options) {
   this.id = idCheck(options);
@@ -29,6 +27,8 @@ function allowRemove(option) {
 }
 
 function drawInteractiveCalendar(el) {
+  const date = new Date();
+
   el.innerHTML = `
     <div class="title">
       <button class="last">&#11164;</button>
@@ -45,10 +45,8 @@ function drawInteractiveCalendar(el) {
   const yearElement = el.querySelector(".year");
   const contentElement = el.querySelector(".table_calendar");
 
-  const date = new Date();
-
   drawCalendarTable(date.getFullYear(), date.getMonth(), contentElement);
-
+  
   const calendarNotes = JSON.parse(localStorage.getItem(el.id)) || [];
 
   contentElement.addEventListener("click", function (e) {
@@ -134,7 +132,6 @@ function createNewCalendar(idNew) {
 
 function idCheck(obj) {
   obj.el = obj.el || getRandId();
-  const storage = new Storage();
   storage.setData("settingsCalendar", obj);
   const localOptions = storage.getData("settingsCalendar");
   return localOptions.el;

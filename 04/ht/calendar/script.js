@@ -1,3 +1,11 @@
+const settingsCalendar = {
+  el: "cal",
+  showMonth: true,
+  allowAdd: false,
+  allowRemove: true,
+  date: null,
+};
+
 const calendarElement = document.querySelector(".content__calendar");
 
 const pages = {
@@ -14,13 +22,7 @@ function pageCalendar() {
   calendarElement.innerHTML = `
   <div class="calendar-textarea"></div>`;
 
-  const calendar = new Calendar({
-    el: "cal",
-    showMonth: true,
-    allowAdd: false,
-    allowRemove: true,
-    date: null,
-  });
+  const calendar = new Calendar(settingsCalendar);
 
   document.getElementById(calendar.id).classList.toggle("calendar");
 }
@@ -31,18 +33,12 @@ function pageCreate() {
   calendarElement.innerHTML = `
     <div class="settings"></div>
     <div class="calendar-textarea">
-      <div class="pre">
+      <div class="content-for-script">
         <pre></pre>
       </div>
     </div>`;
 
-  const calendar = new Calendar({
-    el: "cal",
-    showMonth: true,
-    allowAdd: false,
-    allowRemove: true,
-    date: null,
-  });
+  const calendar = new Calendar(settingsCalendar);
 
   const settings = document.querySelector(".settings");
   settings.innerHTML = `
