@@ -1,9 +1,9 @@
 class Storage {
   setData(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+    Promise.resolve(localStorage.setItem(key, JSON.stringify(value)));
   }
   getData(key) {
-    return JSON.parse(localStorage.getItem(key));
+    return Promise.resolve(JSON.parse(localStorage.getItem(key)));
   }
 }
 
@@ -11,7 +11,7 @@ const storage = new Storage();
 
 function Calendar(options) {
   this.id = idCheck(options);
-  this.createCalendar = createNewCalendar(this.id);
+  createCalendar = createNewCalendar(this.id);
 }
 
 function showMonth(option) {
@@ -46,18 +46,21 @@ function drawInteractiveCalendar(el) {
   const contentElement = el.querySelector(".table_calendar");
 
   drawCalendarTable(date.getFullYear(), date.getMonth(), contentElement);
-  
-  const calendarNotes = JSON.parse(localStorage.getItem(el.id)) || [];
 
   contentElement.addEventListener("click", function (e) {
-    const target = e.target;
-    if (Number(target.textContent) && !target.classList.contains("day_no-active")) {
-      const eventDate = prompt(`Заметка на ${target.textContent}`, "");
-      if (!eventDate) return;
-      const noteDate = `${target.textContent}.${monthElement.textContent}.${yearElement.textContent}: ${eventDate}`;
-      saveCalendarNotes(noteDate, el, calendarNotes);
-      drawCalendarNotes(el.querySelector(".content-notes"), calendarNotes);
-    }
+    storage.getData(el.id).then((res) => {
+      res = res || [];
+      if (res) {
+        const target = e.target;
+        if (Number(target.textContent) && !target.classList.contains("day_no-active")) {
+          const eventDate = prompt(`Заметка на ${target.textContent}`, "");
+          if (!eventDate) return;
+          const noteDate = `${target.textContent}.${monthElement.textContent}.${yearElement.textContent}: ${eventDate}`;
+          saveCalendarNotes(noteDate, el, res);
+          drawCalendarNotes(el.querySelector(".content-notes"), res);
+        }
+      }
+    });
   });
 
   monthElement.textContent = date.getMonth() + 1;
@@ -73,7 +76,11 @@ function drawInteractiveCalendar(el) {
     yearElement.textContent = date.getFullYear();
     drawCalendarTable(date.getFullYear(), date.getMonth(), contentElement);
   });
-  el.addEventListener("load", drawCalendarNotes(el.querySelector(".content-notes"), calendarNotes));
+
+  storage.getData(el.id).then((res) => {
+    res = res || [];
+    el.addEventListener("load", drawCalendarNotes(el.querySelector(".content-notes"), res));
+  });
 }
 
 function drawCalendarTable(year, month, htmlEl) {
@@ -112,7 +119,7 @@ function drawCalendarTable(year, month, htmlEl) {
 
 function saveCalendarNotes(textNote, element, calendarNotes) {
   calendarNotes.push(textNote);
-  localStorage.setItem(element.id, JSON.stringify(calendarNotes));
+  storage.setData(element.id, calendarNotes);
 }
 
 function drawCalendarNotes(notesCalendar, calendarNotes) {
@@ -133,6 +140,5 @@ function createNewCalendar(idNew) {
 function idCheck(obj) {
   obj.el = obj.el || getRandId();
   storage.setData("settingsCalendar", obj);
-  const localOptions = storage.getData("settingsCalendar");
-  return localOptions.el;
+  return obj.el;
 }
