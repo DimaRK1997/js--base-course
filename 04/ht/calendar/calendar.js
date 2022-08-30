@@ -7,28 +7,27 @@ class Storage {
   }
 }
 
+const date = new Date();
 const storage = new Storage();
 
 function Calendar(options) {
   this.id = idCheck(options);
   createCalendar = createNewCalendar(this.id);
+  displayClickMonth(options.showMonth);
+  notesCheck = options.allowAdd;
+  displayMonthYear(options.date);
 }
 
-function showMonth(option) {
-  //if (option) console.log("запустить функцию showMonth");
+function displayMonthYear(option) {
+  !option ? (document.querySelector(".title").style = "display: none") : "";
 }
 
-function allowAdd(option) {
-  //if (option) console.log("запустить функцию allowAdd");
-}
-
-function allowRemove(option) {
-  //if (option) console.log("запустить функцию allowRemove");
+function displayClickMonth(option) {
+  document.querySelector(".last").disabled = !option;
+  document.querySelector(".next").disabled = !option;
 }
 
 function drawInteractiveCalendar(el) {
-  const date = new Date();
-
   el.innerHTML = `
     <div class="title">
       <button class="last">&#11164;</button>
@@ -48,19 +47,21 @@ function drawInteractiveCalendar(el) {
   drawCalendarTable(date.getFullYear(), date.getMonth(), contentElement);
 
   contentElement.addEventListener("click", function (e) {
-    storage.getData(el.id).then((res) => {
-      res = res || [];
-      if (res) {
-        const target = e.target;
-        if (Number(target.textContent) && !target.classList.contains("day_no-active")) {
-          const eventDate = prompt(`Заметка на ${target.textContent}`, "");
-          if (!eventDate) return;
-          const noteDate = `${target.textContent}.${monthElement.textContent}.${yearElement.textContent}: ${eventDate}`;
-          saveCalendarNotes(noteDate, el, res);
-          drawCalendarNotes(el.querySelector(".content-notes"), res);
+    if (notesCheck) {
+      storage.getData(el.id).then((res) => {
+        res = res || [];
+        if (res) {
+          const target = e.target;
+          if (Number(target.textContent) && !target.classList.contains("day_no-active")) {
+            const eventDate = prompt(`Заметка на ${target.textContent}`, "");
+            if (!eventDate) return;
+            const noteDate = `${target.textContent}.${monthElement.textContent}.${yearElement.textContent}: ${eventDate}`;
+            saveCalendarNotes(noteDate, el, res);
+            drawCalendarNotes(el.querySelector(".content-notes"), res);
+          }
         }
-      }
-    });
+      });
+    }
   });
 
   monthElement.textContent = date.getMonth() + 1;
@@ -85,10 +86,10 @@ function drawInteractiveCalendar(el) {
 
 function drawCalendarTable(year, month, htmlEl) {
   const datelast = new Date(year, month, 0);
-  const date = new Date(year, month);
+  const dateCurrent = new Date(year, month);
 
   let table = `<table><tr class="day-week"><td>пн</td><td>вт</td><td>ср</td><td>чт</td><td>пт</td><td>сб</td><td>вс</td></tr><tr>`;
-  const startDayWeek = date.getDay() === 0 ? 6 : date.getDay() - 1;
+  const startDayWeek = dateCurrent.getDay() === 0 ? 6 : dateCurrent.getDay() - 1;
 
   for (let i = datelast.getDate() - startDayWeek + 1; i <= datelast.getDate(); i++) {
     table += `<td class="day_no-active">${i}</td>`;
@@ -96,12 +97,12 @@ function drawCalendarTable(year, month, htmlEl) {
 
   let daysMonth = 0;
 
-  while (date.getMonth() === month) {
-    table += `<td>${date.getDate()}</td>`;
-    if ((date.getDate() + startDayWeek) % 7 === 0) {
+  while (dateCurrent.getMonth() === month) {
+    table += `<td>${dateCurrent.getDate()}</td>`;
+    if ((dateCurrent.getDate() + startDayWeek) % 7 === 0) {
       table += `</tr>`;
     }
-    date.setDate(date.getDate() + 1);
+    dateCurrent.setDate(dateCurrent.getDate() + 1);
     daysMonth++;
   }
 

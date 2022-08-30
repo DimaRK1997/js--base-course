@@ -28,8 +28,6 @@ function pageCalendar() {
 }
 
 function pageCreate() {
-  const date = new Date();
-
   calendarElement.innerHTML = `
     <div class="settings"></div>
     <div class="calendar-textarea">
@@ -76,8 +74,13 @@ function pageCreate() {
 
   formElement.addEventListener("change", function (e) {
     e.preventDefault();
+
     const form = new FormData(formElement);
     settingsCalendar = Object.fromEntries(form);
+
+    date.setMonth(document.querySelector("#month").value - 1);
+    date.setFullYear(document.querySelector("#year").value);
+
     pageCreate();
   });
 
@@ -91,15 +94,15 @@ window.addEventListener("load", showPages);
 
 function generatorScript(data) {
   return `
-  <script scr="..."></script>
+  <script scr="./calendar.js"></script>
   <script>
     (function() {
-      var id = ${data.el};
+      var ${(id = data.el)};
       document.write('
-        <div id="' + ${data.el} + '">
+        <div id="' + ${id} + '">
         </div>');
       new Calendar({
-        el: '#' + ${data.el},
+        el: '#' + ${id},
         showMonth: ${data.showMonth},
         allowAdd: ${data.allowAdd},
         allowRemove: ${data.allowRemove},
