@@ -73,26 +73,23 @@ function drawInteractiveCalendar(el, options) {
 
   document.querySelector(".content-notes").addEventListener("click", function (e) {
     if (document.querySelector("[remove-notes='true']")) {
-      const elementClear = e.target.classList.value;
       storage.getData(el.id).then((res) => {
-        for (let key in res) {
-          if (res[key].id === elementClear) {
-            document.getElementById(elementClear).remove();
-            delete res[key];
-            const strres = JSON.stringify(res)
-              .replaceAll("null,", "")
-              .replaceAll(",null]", "]")
-              .replaceAll("[null", "[");
-            storage.setData(el.id, JSON.parse(strres));
-          }
+        if (e.target.parentNode.hasAttribute("note-calendar")) {
+          const newres = res.filter((el) => {
+            if (el.id == e.target.parentNode.getAttribute("note-calendar")) {
+              e.target.parentNode.remove();
+              return
+            }
+            return el;
+          })
+          storage.setData(el.id, newres);
         }
       });
     }
   });
 
   storage.getData(el.id).then((res) => {
-    res = res || [];
-    el.addEventListener("load", drawCalendarNotes(el.querySelector(".content-notes"), res));
+    drawCalendarNotes(el.querySelector(".content-notes"), res);
   });
 }
 
@@ -131,22 +128,22 @@ function drawCalendarTable(year, month, htmlEl) {
 }
 
 function saveCalendarNotes(textNote, element, calendarNotes) {
-  dataNotes.id = "#" + new Date().getTime();
+  dataNotes.id = new Date().getTime();
   dataNotes.text = textNote;
   calendarNotes.push(dataNotes);
   storage.setData(element.id, calendarNotes);
 }
 
 function drawCalendarNotes(notesCalendar, calendarNotes) {
-  notesCalendar.innerHTML = "";
-  for (let key in calendarNotes) {
-    if (calendarNotes[key]) {
-      notesCalendar.innerHTML += `<div id="${calendarNotes[key].id}" class="note">
-        <p>${calendarNotes[key].text}</p>
-        <button class="${calendarNotes[key].id}">✖</button>
-      </div>`;
-    }
-  }
+  notesCalendar.innerHTML = (calendarNotes || [])
+    .map((calendarNote) => {
+      return `
+    <div class="note" note-calendar="${calendarNote.id}">
+      <p>${calendarNote.text}</p>
+      <button>✖</button>
+    </div>`;
+    })
+    .join("");
 }
 
 function getRandId() {
