@@ -97,12 +97,8 @@ function generatorScript(data) {
   <script scr="./calendar.js"></script>
   <script>
     (function() {
-      var ${(id = data.el)};
-      document.write('
-        <div id="' + ${id} + '">
-        </div>');
       new Calendar({
-        el: '#' + ${id},
+        el: ${data.el}',
         showMonth: ${data.showMonth},
         allowAdd: ${data.allowAdd},
         allowRemove: ${data.allowRemove},

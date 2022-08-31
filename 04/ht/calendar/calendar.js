@@ -7,37 +7,30 @@ class Storage {
   }
 }
 
+const dataNotes = {
+  id: "",
+  text: "",
+};
+
 const date = new Date();
 const storage = new Storage();
 
 function Calendar(options) {
   this.id = idCheck(options);
-  createCalendar = createNewCalendar(this.id);
-  displayClickMonth(options.showMonth);
-  notesCheck = options.allowAdd;
-  displayMonthYear(options.date);
+  createCalendar = createNewCalendar(this.id, options);
 }
 
-function displayMonthYear(option) {
-  !option ? (document.querySelector(".title").style = "display: none") : "";
-}
-
-function displayClickMonth(option) {
-  document.querySelector(".last").disabled = !option;
-  document.querySelector(".next").disabled = !option;
-}
-
-function drawInteractiveCalendar(el) {
+function drawInteractiveCalendar(el, options) {
   el.innerHTML = `
-    <div class="title">
-      <button class="last">&#11164;</button>
+    <div class="title" ${!options.date ? "style='display: none'" : ""}>
+      <button class="last" ${!options.showMonth ? "disabled" : ""}>&#11164;</button>
       <div class="text-date">
         <span class="month"></span>/<span class="year"></span>
       </div>
-      <button class="next">&#11166;</button>
+      <button class="next" ${!options.showMonth ? "disabled" : ""}>&#11166;</button>
     </div>
-    <div class="table_calendar"></div>
-    <div class="content-notes"></div>`;
+    <div class="table_calendar" add-notes=${options.allowAdd}></div>
+    <div class="content-notes" remove-notes=${options.allowRemove}></div>`;
 
   const headerElement = el.querySelector(".title");
   const monthElement = el.querySelector(".month");
@@ -46,8 +39,8 @@ function drawInteractiveCalendar(el) {
 
   drawCalendarTable(date.getFullYear(), date.getMonth(), contentElement);
 
-  contentElement.addEventListener("click", function (e) {
-    if (notesCheck) {
+  contentElement.addEventListener("dblclick", function (e) {
+    if (document.querySelector("[add-notes='true']")) {
       storage.getData(el.id).then((res) => {
         res = res || [];
         if (res) {
@@ -76,6 +69,25 @@ function drawInteractiveCalendar(el) {
     monthElement.textContent = date.getMonth() + 1;
     yearElement.textContent = date.getFullYear();
     drawCalendarTable(date.getFullYear(), date.getMonth(), contentElement);
+  });
+
+  document.querySelector(".content-notes").addEventListener("click", function (e) {
+    if (document.querySelector("[remove-notes='true']")) {
+      const elementClear = e.target.classList.value;
+      storage.getData(el.id).then((res) => {
+        for (let key in res) {
+          if (res[key].id === elementClear) {
+            document.getElementById(elementClear).remove();
+            delete res[key];
+            const strres = JSON.stringify(res)
+              .replaceAll("null,", "")
+              .replaceAll(",null]", "]")
+              .replaceAll("[null", "[");
+            storage.setData(el.id, JSON.parse(strres));
+          }
+        }
+      });
+    }
   });
 
   storage.getData(el.id).then((res) => {
@@ -119,23 +131,34 @@ function drawCalendarTable(year, month, htmlEl) {
 }
 
 function saveCalendarNotes(textNote, element, calendarNotes) {
-  calendarNotes.push(textNote);
+  dataNotes.id = "#" + new Date().getTime();
+  dataNotes.text = textNote;
+  calendarNotes.push(dataNotes);
   storage.setData(element.id, calendarNotes);
 }
 
 function drawCalendarNotes(notesCalendar, calendarNotes) {
-  notesCalendar.innerHTML = calendarNotes.map((note) => `<p>${note}</p>`).join("");
+  notesCalendar.innerHTML = "";
+  for (let key in calendarNotes) {
+    if (calendarNotes[key]) {
+      notesCalendar.innerHTML += `<div id="${calendarNotes[key].id}" class="note">
+        <p>${calendarNotes[key].text}</p>
+        <button class="${calendarNotes[key].id}">✖</button>
+      </div>`;
+    }
+  }
 }
 
 function getRandId() {
   return `n${Math.random() * 10 ** 18}`;
 }
 
-function createNewCalendar(idNew) {
+function createNewCalendar(idNew, options) {
+  const elementForCalendar = document.querySelector(".calendar-textarea") || document.querySelector("body");
   const creatElement = document.createElement("div");
   creatElement.id = idNew;
-  document.querySelector(".calendar-textarea").appendChild(creatElement);
-  drawInteractiveCalendar(document.querySelector(`#${idNew}`));
+  elementForCalendar.appendChild(creatElement);
+  drawInteractiveCalendar(document.querySelector(`#${idNew}`), options);
 }
 
 function idCheck(obj) {

@@ -188,3 +188,25 @@ td {
     font-size: 6.7px;
   }
 }
+
+.content-notes {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.note {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px;
+  border: 1px solid green;
+}
+
+.note > button {
+  background: none;
+  border: none;
+}
+
+.note > button:hover {
+  cursor: pointer;
+}
