@@ -75,14 +75,12 @@ function drawInteractiveCalendar(el, options) {
     if (document.querySelector("[remove-notes='true']")) {
       storage.getData(el.id).then((res) => {
         if (e.target.parentNode.hasAttribute("note-calendar")) {
-          const newres = res.filter((el) => {
-            if (el.id == e.target.parentNode.getAttribute("note-calendar")) {
-              e.target.parentNode.remove();
-              return
-            }
-            return el;
-          })
-          storage.setData(el.id, newres);
+          storage.setData(
+            el.id,
+            res.filter((el) =>
+              el.id == e.target.parentNode.getAttribute("note-calendar") ? e.target.parentNode.remove() : el
+            )
+          );
         }
       });
     }
