@@ -94,11 +94,12 @@ window.addEventListener("load", showPages);
 
 function generatorScript(data) {
   return `
-  <script scr="./calendar.js"></script>
+  <script src="https://raw.githack.com/\n\tDimaRK1997/js--base-course/\n\ttask-4/04/ht/calendar/calendar.js">
+  </script>
   <script>
     (function() {
       new Calendar({
-        el: ${data.el}',
+        el: "${data.el}",
         showMonth: ${data.showMonth},
         allowAdd: ${data.allowAdd},
         allowRemove: ${data.allowRemove},
