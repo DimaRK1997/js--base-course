@@ -1,8 +1,11 @@
 const URL = "https://myfirstproject-361208-default-rtdb.firebaseio.com/";
 
 class Storage {
-  setData(key, value) {
-    Promise.resolve(localStorage.setItem(key, JSON.stringify(value)));
+  setData(path, value) {
+    return fetch(URL + path + "/.json", {
+      method: "PUT",
+      body: JSON.stringify(value),
+    }).then((data) => data.json());
   }
   getData(key) {
     return Promise.resolve(JSON.parse(localStorage.getItem(key)));
@@ -14,21 +17,15 @@ class TaskData {
     return fetch(URL + path + "/.json").then((res) => res.json());
   }
   addTask(path, dataNotes) {
-    fetch(URL + path + "/.json", {
+    return fetch(URL + path + "/.json", {
       method: "POST",
       body: JSON.stringify(dataNotes),
     }).then((data) => data.json());
   }
-
   removeTask(path) {
     return fetch(URL + path + ".json", { method: "DELETE" });
   }
 }
-
-const dataNotes = {
-  text: "",
-  date: "",
-};
 
 const date = new Date();
 const storage = new Storage();
@@ -58,23 +55,6 @@ function drawInteractiveCalendar(el, options) {
 
   drawCalendarTable(date.getFullYear(), date.getMonth(), contentElement);
 
-  // contentElement.addEventListener("dblclick", function (e) {
-  //   if (document.querySelector("[add-notes='true']")) {
-  //     const target = e.target;
-  //     if (Number(target.textContent) && !target.classList.contains("day_no-active")) {
-  //       const eventDate = prompt(`Заметка на ${target.textContent}`, "");
-  //       if (!eventDate) return;
-  //       const noteDate = `${target.textContent}.${monthElement.textContent}.${yearElement.textContent}: ${eventDate}`;
-  //       tasksstorage.addTask("tasks", noteDate).then((res) => {
-  //         saveCalendarNotes(noteDate);
-  //         tasksstorage.tasksAll("tasks").then((res) => {
-  //           drawCalendarNotes(el.querySelector(".content-notes"), res);
-  //         });
-  //       });
-  //     }
-  //   }
-  // });
-
   contentElement.addEventListener("dblclick", function (e) {
     if (document.querySelector("[add-notes='true']")) {
       const target = e.target;
@@ -82,10 +62,7 @@ function drawInteractiveCalendar(el, options) {
         const eventDate = prompt(`Заметка на ${target.textContent}`, "");
         if (!eventDate) return;
         const noteDate = `${target.textContent}.${monthElement.textContent}.${yearElement.textContent}: ${eventDate}`;
-        saveCalendarNotes(noteDate);
-        tasksstorage.tasksAll("tasks").then((res) => {
-          drawCalendarNotes(el.querySelector(".content-notes"), res);
-        });
+        saveCalendarNotes(noteDate, el);
       }
     }
   });
@@ -106,7 +83,7 @@ function drawInteractiveCalendar(el, options) {
 
   document.querySelector(".content-notes").addEventListener("click", function (e) {
     if (document.querySelector("[remove-notes='true']")) {
-      const remove = e.target.parentNode.getAttribute("note-calendar");
+      const remove = e.target.parentNode.parentNode.getAttribute("note-calendar");
       if (remove) {
         tasksstorage.removeTask("tasks/" + remove).then(() => {
           tasksstorage.tasksAll("tasks").then((res) => {
@@ -120,12 +97,6 @@ function drawInteractiveCalendar(el, options) {
   tasksstorage.tasksAll("tasks").then((data) => {
     drawCalendarNotes(el.querySelector(".content-notes"), data || []);
   });
-  // tasksstorage
-  //   .tasksAll("tasks")
-  //   .then((data) => data.json())
-  //   .then((res) => {
-
-  //   });
 }
 
 function drawCalendarTable(year, month, htmlEl) {
@@ -162,11 +133,28 @@ function drawCalendarTable(year, month, htmlEl) {
   htmlEl.innerHTML = table;
 }
 
-function saveCalendarNotes(textNote) {
+function saveCalendarNotes(textNote, el) {
   const nowdate = new Date();
-  dataNotes.date = nowdate.getDate() + "." + (nowdate.getMonth() + 1) + "." + nowdate.getFullYear();
+  const dataNotes = {
+    text: "",
+    date: "",
+  };
+  dataNotes.date =
+    nowdate.getHours() +
+    ":" +
+    nowdate.getMinutes() +
+    "|" +
+    nowdate.getDate() +
+    "." +
+    (nowdate.getMonth() + 1) +
+    "." +
+    nowdate.getFullYear();
   dataNotes.text = textNote;
-  tasksstorage.addTask("tasks", dataNotes);
+  tasksstorage.addTask("tasks", dataNotes).then(() => {
+    tasksstorage.tasksAll("tasks").then((res) => {
+      drawCalendarNotes(el.querySelector(".content-notes"), res);
+    });
+  });
 }
 
 function drawCalendarNotes(notesCalendar, calendarNotes) {
@@ -174,8 +162,11 @@ function drawCalendarNotes(notesCalendar, calendarNotes) {
     .map((calendarNote) => {
       return `
     <div class="note" note-calendar="${calendarNote[0]}">
-      <p>${calendarNote[1].text}</p>
-      <button>✖</button>
+      <div class="text-btn">
+        <p>${calendarNote[1].text}</p>
+        <button>✖</button>
+      </div>
+      <span>Создано:(${calendarNote[1].date})</span>
     </div>`;
     })
     .join("");

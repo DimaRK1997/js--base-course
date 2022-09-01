@@ -196,17 +196,26 @@ td {
 }
 
 .note {
-  display: flex;
-  justify-content: space-between;
   margin: 5px;
   border: 1px solid green;
 }
 
-.note > button {
+.text-btn {
+  display: flex;
+  justify-content: space-between;
+}
+
+.text-btn > button {
   background: none;
   border: none;
 }
 
-.note > button:hover {
+.text-btn > button:hover {
   cursor: pointer;
+}
+
+.note > span {
+  font-size: 9px;
+  float: right;
+  margin-right: 2px;
 }
