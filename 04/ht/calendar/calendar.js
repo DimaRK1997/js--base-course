@@ -58,23 +58,6 @@ function drawInteractiveCalendar(el, options) {
 
   drawCalendarTable(date.getFullYear(), date.getMonth(), contentElement);
 
-  contentElement.addEventListener("dblclick", function (e) {
-    if (document.querySelector("[add-notes='true']")) {
-      const target = e.target;
-      if (Number(target.textContent) && !target.classList.contains("day_no-active")) {
-        const eventDate = prompt(`Заметка на ${target.textContent}`, "");
-        if (!eventDate) return;
-        const noteDate = `${target.textContent}.${monthElement.textContent}.${yearElement.textContent}: ${eventDate}`;
-        tasksstorage.addTask("tasks", noteDate).then((res) => {
-          saveCalendarNotes(noteDate);
-          tasksstorage.tasksAll("tasks").then((res) => {
-            drawCalendarNotes(el.querySelector(".content-notes"), res);
-          });
-        });
-      }
-    }
-  });
-
   // contentElement.addEventListener("dblclick", function (e) {
   //   if (document.querySelector("[add-notes='true']")) {
   //     const target = e.target;
@@ -82,13 +65,30 @@ function drawInteractiveCalendar(el, options) {
   //       const eventDate = prompt(`Заметка на ${target.textContent}`, "");
   //       if (!eventDate) return;
   //       const noteDate = `${target.textContent}.${monthElement.textContent}.${yearElement.textContent}: ${eventDate}`;
-  //       saveCalendarNotes(noteDate);
-  //       tasksstorage.tasksAll("tasks").then((res) => {
-  //         drawCalendarNotes(el.querySelector(".content-notes"), res);
+  //       tasksstorage.addTask("tasks", noteDate).then((res) => {
+  //         saveCalendarNotes(noteDate);
+  //         tasksstorage.tasksAll("tasks").then((res) => {
+  //           drawCalendarNotes(el.querySelector(".content-notes"), res);
+  //         });
   //       });
   //     }
   //   }
   // });
+
+  contentElement.addEventListener("dblclick", function (e) {
+    if (document.querySelector("[add-notes='true']")) {
+      const target = e.target;
+      if (Number(target.textContent) && !target.classList.contains("day_no-active")) {
+        const eventDate = prompt(`Заметка на ${target.textContent}`, "");
+        if (!eventDate) return;
+        const noteDate = `${target.textContent}.${monthElement.textContent}.${yearElement.textContent}: ${eventDate}`;
+        saveCalendarNotes(noteDate);
+        tasksstorage.tasksAll("tasks").then((res) => {
+          drawCalendarNotes(el.querySelector(".content-notes"), res);
+        });
+      }
+    }
+  });
 
   monthElement.textContent = date.getMonth() + 1;
   yearElement.textContent = date.getFullYear();
