@@ -1,3 +1,5 @@
+const URL = "https://myfirstproject-361208-default-rtdb.firebaseio.com/";
+
 class Storage {
   setData(key, value) {
     Promise.resolve(localStorage.setItem(key, JSON.stringify(value)));
@@ -7,13 +9,30 @@ class Storage {
   }
 }
 
+class TaskData {
+  tasksAll(path) {
+    return fetch(URL + path + "/.json").then((res) => res.json());
+  }
+  addTask(path, dataNotes) {
+    fetch(URL + path + "/.json", {
+      method: "POST",
+      body: JSON.stringify(dataNotes),
+    }).then((data) => data.json());
+  }
+
+  removeTask(path) {
+    return fetch(URL + path + ".json", { method: "DELETE" });
+  }
+}
+
 const dataNotes = {
-  id: "",
   text: "",
+  date: "",
 };
 
 const date = new Date();
 const storage = new Storage();
+const tasksstorage = new TaskData();
 
 function Calendar(options) {
   this.id = idCheck(options);
@@ -41,21 +60,35 @@ function drawInteractiveCalendar(el, options) {
 
   contentElement.addEventListener("dblclick", function (e) {
     if (document.querySelector("[add-notes='true']")) {
-      storage.getData(el.id).then((res) => {
-        res = res || [];
-        if (res) {
-          const target = e.target;
-          if (Number(target.textContent) && !target.classList.contains("day_no-active")) {
-            const eventDate = prompt(`Заметка на ${target.textContent}`, "");
-            if (!eventDate) return;
-            const noteDate = `${target.textContent}.${monthElement.textContent}.${yearElement.textContent}: ${eventDate}`;
-            saveCalendarNotes(noteDate, el, res);
+      const target = e.target;
+      if (Number(target.textContent) && !target.classList.contains("day_no-active")) {
+        const eventDate = prompt(`Заметка на ${target.textContent}`, "");
+        if (!eventDate) return;
+        const noteDate = `${target.textContent}.${monthElement.textContent}.${yearElement.textContent}: ${eventDate}`;
+        tasksstorage.addTask("tasks", noteDate).then((res) => {
+          saveCalendarNotes(noteDate);
+          tasksstorage.tasksAll("tasks").then((res) => {
             drawCalendarNotes(el.querySelector(".content-notes"), res);
-          }
-        }
-      });
+          });
+        });
+      }
     }
   });
+
+  // contentElement.addEventListener("dblclick", function (e) {
+  //   if (document.querySelector("[add-notes='true']")) {
+  //     const target = e.target;
+  //     if (Number(target.textContent) && !target.classList.contains("day_no-active")) {
+  //       const eventDate = prompt(`Заметка на ${target.textContent}`, "");
+  //       if (!eventDate) return;
+  //       const noteDate = `${target.textContent}.${monthElement.textContent}.${yearElement.textContent}: ${eventDate}`;
+  //       saveCalendarNotes(noteDate);
+  //       tasksstorage.tasksAll("tasks").then((res) => {
+  //         drawCalendarNotes(el.querySelector(".content-notes"), res);
+  //       });
+  //     }
+  //   }
+  // });
 
   monthElement.textContent = date.getMonth() + 1;
   yearElement.textContent = date.getFullYear();
@@ -73,22 +106,26 @@ function drawInteractiveCalendar(el, options) {
 
   document.querySelector(".content-notes").addEventListener("click", function (e) {
     if (document.querySelector("[remove-notes='true']")) {
-      storage.getData(el.id).then((res) => {
-        if (e.target.parentNode.hasAttribute("note-calendar")) {
-          storage.setData(
-            el.id,
-            res.filter((el) =>
-              el.id == e.target.parentNode.getAttribute("note-calendar") ? e.target.parentNode.remove() : el
-            )
-          );
-        }
-      });
+      const remove = e.target.parentNode.getAttribute("note-calendar");
+      if (remove) {
+        tasksstorage.removeTask("tasks/" + remove).then(() => {
+          tasksstorage.tasksAll("tasks").then((res) => {
+            drawCalendarNotes(el.querySelector(".content-notes"), res);
+          });
+        });
+      }
     }
   });
 
-  storage.getData(el.id).then((res) => {
-    drawCalendarNotes(el.querySelector(".content-notes"), res);
+  tasksstorage.tasksAll("tasks").then((data) => {
+    drawCalendarNotes(el.querySelector(".content-notes"), data || []);
   });
+  // tasksstorage
+  //   .tasksAll("tasks")
+  //   .then((data) => data.json())
+  //   .then((res) => {
+
+  //   });
 }
 
 function drawCalendarTable(year, month, htmlEl) {
@@ -125,19 +162,19 @@ function drawCalendarTable(year, month, htmlEl) {
   htmlEl.innerHTML = table;
 }
 
-function saveCalendarNotes(textNote, element, calendarNotes) {
-  dataNotes.id = new Date().getTime();
+function saveCalendarNotes(textNote) {
+  const nowdate = new Date();
+  dataNotes.date = nowdate.getDate() + "." + (nowdate.getMonth() + 1) + "." + nowdate.getFullYear();
   dataNotes.text = textNote;
-  calendarNotes.push(dataNotes);
-  storage.setData(element.id, calendarNotes);
+  tasksstorage.addTask("tasks", dataNotes);
 }
 
 function drawCalendarNotes(notesCalendar, calendarNotes) {
-  notesCalendar.innerHTML = (calendarNotes || [])
+  notesCalendar.innerHTML = Object.entries(calendarNotes || [])
     .map((calendarNote) => {
       return `
-    <div class="note" note-calendar="${calendarNote.id}">
-      <p>${calendarNote.text}</p>
+    <div class="note" note-calendar="${calendarNote[0]}">
+      <p>${calendarNote[1].text}</p>
       <button>✖</button>
     </div>`;
     })
