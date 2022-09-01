@@ -33,7 +33,7 @@ const tasksstorage = new TaskData();
 
 function Calendar(options) {
   this.id = idCheck(options);
-  createCalendar = createNewCalendar(this.id, options);
+  createNewCalendar(this.id, options);
 }
 
 function drawInteractiveCalendar(el, options) {
