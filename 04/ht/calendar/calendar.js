@@ -1,30 +1,52 @@
-const URL = "https://myfirstproject-361208-default-rtdb.firebaseio.com/";
-
 class Storage {
-  setData(path, value) {
-    return fetch(URL + path + "/.json", {
+  setData(value) {
+    const URL = "https://myfirstproject-361208-default-rtdb.firebaseio.com/settingsCalendar/.json";
+    return fetch(URL, {
       method: "PUT",
       body: JSON.stringify(value),
-    }).then((data) => data.json());
+    })
+      .then((res) => errStatus(res))
+      .then((res) => res)
+      .catch((err) => console.error("Status: ", err));
   }
-  getData(key) {
-    return Promise.resolve(JSON.parse(localStorage.getItem(key)));
+  getData() {
+    const URL = "https://myfirstproject-361208-default-rtdb.firebaseio.com/settingsCalendar/.json";
+    return fetch(URL)
+      .then((res) => errStatus(res))
+      .then((res) => res)
+      .catch((err) => console.error("Status: ", err));
   }
 }
 
 class TaskData {
-  tasksAll(path) {
-    return fetch(URL + path + "/.json").then((res) => res.json());
+  tasksAll() {
+    const URL = "https://myfirstproject-361208-default-rtdb.firebaseio.com/tasks/.json";
+    return fetch(URL)
+      .then((res) => errStatus(res))
+      .then((res) => res)
+      .catch((err) => console.error("Status: ", err));
   }
-  addTask(path, dataNotes) {
-    return fetch(URL + path + "/.json", {
+  addTask(dataNotes) {
+    const URL = "https://myfirstproject-361208-default-rtdb.firebaseio.com/tasks/.json";
+    return fetch(URL, {
       method: "POST",
       body: JSON.stringify(dataNotes),
-    }).then((data) => data.json());
+    })
+      .then((res) => errStatus(res))
+      .then((res) => res)
+      .catch((err) => console.error("Status: ", err));
   }
-  removeTask(path) {
-    return fetch(URL + path + ".json", { method: "DELETE" });
+  removeTask(idToRemove) {
+    const URL = `https://myfirstproject-361208-default-rtdb.firebaseio.com/tasks/${idToRemove}/.json`;
+    return fetch(URL, { method: "DELETE" });
   }
+}
+
+function errStatus(res) {
+  if (res.status === 200) {
+    return Promise.resolve(res.json());
+  }
+  return Promise.reject(res);
 }
 
 const date = new Date();
@@ -32,7 +54,7 @@ const storage = new Storage();
 const tasksstorage = new TaskData();
 
 function Calendar(options) {
-  this.id = idCheck(options);
+  this.id = options.el || getRandId();
   createNewCalendar(this.id, options);
 }
 
@@ -83,10 +105,10 @@ function drawInteractiveCalendar(el, options) {
 
   document.querySelector(".content-notes").addEventListener("click", function (e) {
     if (document.querySelector("[remove-notes='true']")) {
-      const remove = e.target.parentNode.parentNode.getAttribute("note-calendar");
-      if (remove) {
-        tasksstorage.removeTask("tasks/" + remove).then(() => {
-          tasksstorage.tasksAll("tasks").then((res) => {
+      const idToRemove = e.target.parentNode.parentNode.getAttribute("note-calendar");
+      if (idToRemove) {
+        tasksstorage.removeTask(idToRemove).then(() => {
+          tasksstorage.tasksAll().then((res) => {
             drawCalendarNotes(el.querySelector(".content-notes"), res);
           });
         });
@@ -94,7 +116,7 @@ function drawInteractiveCalendar(el, options) {
     }
   });
 
-  tasksstorage.tasksAll("tasks").then((data) => {
+  tasksstorage.tasksAll().then((data) => {
     drawCalendarNotes(el.querySelector(".content-notes"), data || []);
   });
 }
@@ -150,8 +172,8 @@ function saveCalendarNotes(textNote, el) {
     "." +
     nowdate.getFullYear();
   dataNotes.text = textNote;
-  tasksstorage.addTask("tasks", dataNotes).then(() => {
-    tasksstorage.tasksAll("tasks").then((res) => {
+  tasksstorage.addTask(dataNotes).then(() => {
+    tasksstorage.tasksAll().then((res) => {
       drawCalendarNotes(el.querySelector(".content-notes"), res);
     });
   });
@@ -186,6 +208,5 @@ function createNewCalendar(idNew, options) {
 
 function idCheck(obj) {
   obj.el = obj.el || getRandId();
-  storage.setData("settingsCalendar", obj);
   return obj.el;
 }

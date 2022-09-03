@@ -1,4 +1,4 @@
-let settingsCalendar = {
+const settingsCalendar = {
   el: "calendar",
   showMonth: true,
   allowAdd: true,
@@ -22,9 +22,11 @@ function pageCalendar() {
   calendarElement.innerHTML = `
   <div class="calendar-textarea"></div>`;
 
-  const calendar = new Calendar(settingsCalendar);
-
-  document.getElementById(calendar.id).classList.toggle("calendar");
+  storage.getData().then((res) => {
+    const options = res || settingsCalendar;
+    const calendar = new Calendar(options);
+    document.getElementById(calendar.id).classList.toggle("calendar");
+  });
 }
 
 function pageCreate() {
@@ -36,57 +38,52 @@ function pageCreate() {
       </div>
     </div>`;
 
-  const calendar = new Calendar(settingsCalendar);
+  storage.getData().then((res) => {
+    const options = res || settingsCalendar;
+    const calendar = new Calendar(options);
 
-  const settings = document.querySelector(".settings");
-
-  settings.innerHTML = `
+    const settings = document.querySelector(".settings");
+    settings.innerHTML = `
       <form>
         <fieldset>
           <legend>Configure Calendar</legend>
-          <input type="checkbox" id="change" name="showMonth" ${
-            settingsCalendar.showMonth ? "checked" : ""
-          } value="true"/>
+          <input type="checkbox" id="change" name="showMonth" ${options.showMonth ? "checked" : ""} value="true"/>
           <label for="change">allow change month</label><br />
-          <input type="checkbox" id="add" name="allowAdd" ${settingsCalendar.allowAdd ? "checked" : ""} value="true"/>
+          <input type="checkbox" id="add" name="allowAdd" ${options.allowAdd ? "checked" : ""} value="true"/>
           <label for="add">allow add tasks</label><br />
-          <input type="checkbox" id="remove" name="allowRemove"  ${
-            settingsCalendar.allowRemove ? "checked" : ""
-          } value="true"/>
+          <input type="checkbox" id="remove" name="allowRemove"  ${options.allowRemove ? "checked" : ""} value="true"/>
           <label for="remove">allow remove tasks</label><br />
-          <input type="checkbox" id="date" name="date" ${settingsCalendar.date ? "checked" : ""} value="true"/>
+          <input type="checkbox" id="date" name="date" ${options.date ? "checked" : ""} value="true"/>
           <label for="date">show month / year</label><br />
           <label for="month">month:</label>
           <input type="number" id="month" name="month" value="${date.getMonth() + 1}" required /><br />
           <label for="year">year:</label>
           <input type="number" id="year" name="year" value="${date.getFullYear()}" required /><br />
           <label for="id-text">id:</label>
-          <input type="text" id="id-text" name="el" value="${settingsCalendar.el || ""}" required /><br />
+          <input type="text" id="id-text" name="el" value="${options.el || ""}" required /><br />
         </fieldset>
       </form>`;
 
-  settingsCalendar.showMonth = document.querySelector("#change").hasAttribute("checked");
-  settingsCalendar.allowAdd = document.querySelector("#add").hasAttribute("checked");
-  settingsCalendar.allowRemove = document.querySelector("#remove").hasAttribute("checked");
-  settingsCalendar.date = document.querySelector("#date").hasAttribute("checked");
+    options.showMonth = document.querySelector("#change").hasAttribute("checked");
+    options.allowAdd = document.querySelector("#add").hasAttribute("checked");
+    options.allowRemove = document.querySelector("#remove").hasAttribute("checked");
+    options.date = document.querySelector("#date").hasAttribute("checked");
 
-  const formElement = document.querySelector("form");
+    const formElement = document.querySelector("form");
 
-  formElement.addEventListener("change", function (e) {
-    e.preventDefault();
+    formElement.addEventListener("change", function (e) {
+      e.preventDefault();
+      const form = new FormData(formElement);
+      date.setMonth(document.querySelector("#month").value - 1);
+      date.setFullYear(document.querySelector("#year").value);
+      storage.setData(Object.fromEntries(form)).then(() => {
+        pageCreate();
+      });
+    });
 
-    const form = new FormData(formElement);
-    settingsCalendar = Object.fromEntries(form);
-
-    date.setMonth(document.querySelector("#month").value - 1);
-    date.setFullYear(document.querySelector("#year").value);
-
-    pageCreate();
+    document.getElementById(calendar.id).classList.toggle("calendar-small");
+    document.querySelector(".text-script").textContent = generatorScript(options);
   });
-
-  document.getElementById(calendar.id).classList.toggle("calendar-small");
-
-  document.querySelector(".text-script").textContent = generatorScript(settingsCalendar);
 }
 
 window.addEventListener("hashchange", showPages);
