@@ -1,40 +1,34 @@
 class Storage {
+  url = "https://myfirstproject-361208-default-rtdb.firebaseio.com/settingsCalendar/.json";
   setData(value) {
-    const URL = "https://myfirstproject-361208-default-rtdb.firebaseio.com/settingsCalendar/.json";
-    return fetch(URL, {
+    return fetch(this.url, {
       method: "PUT",
       body: JSON.stringify(value),
     })
-      .then((res) => errStatus(res))
-      .then((res) => res)
-      .catch((err) => console.error("Status: ", err));
+      .then((res) => res.json())
+      .catch((err) => catchResult(err));
   }
   getData() {
-    const URL = "https://myfirstproject-361208-default-rtdb.firebaseio.com/settingsCalendar/.json";
-    return fetch(URL)
-      .then((res) => errStatus(res))
-      .then((res) => res)
-      .catch((err) => console.error("Status: ", err));
+    return fetch(this.url)
+      .then((res) => res.json())
+      .catch((err) => catchResult(err));
   }
 }
 
 class TaskData {
+  url = "https://myfirstproject-361208-default-rtdb.firebaseio.com/tasks/.json";
   tasksAll() {
-    const URL = "https://myfirstproject-361208-default-rtdb.firebaseio.com/tasks/.json";
-    return fetch(URL)
-      .then((res) => errStatus(res))
-      .then((res) => res)
-      .catch((err) => console.error("Status: ", err));
+    return fetch(this.url)
+      .then((res) => res.json())
+      .catch((err) => catchResult(err));
   }
   addTask(dataNotes) {
-    const URL = "https://myfirstproject-361208-default-rtdb.firebaseio.com/tasks/.json";
-    return fetch(URL, {
+    return fetch(this.url, {
       method: "POST",
       body: JSON.stringify(dataNotes),
     })
-      .then((res) => errStatus(res))
-      .then((res) => res)
-      .catch((err) => console.error("Status: ", err));
+      .then((res) => res.json())
+      .catch((err) => catchResult(err));
   }
   removeTask(idToRemove) {
     const URL = `https://myfirstproject-361208-default-rtdb.firebaseio.com/tasks/${idToRemove}/.json`;
@@ -42,11 +36,8 @@ class TaskData {
   }
 }
 
-function errStatus(res) {
-  if (res.status === 200) {
-    return Promise.resolve(res.json());
-  }
-  return Promise.reject(res);
+function catchResult(err) {
+  console.error("Error: ", err);
 }
 
 const date = new Date();
