@@ -6,12 +6,12 @@ class Storage {
       body: JSON.stringify(value),
     })
       .then((res) => res.json())
-      .catch((err) => catchResult(err));
+      .catch(catchResult);
   }
   getData() {
     return fetch(this.url)
       .then((res) => res.json())
-      .catch((err) => catchResult(err));
+      .catch(catchResult);
   }
 }
 
@@ -20,7 +20,7 @@ class TaskData {
   tasksAll() {
     return fetch(this.url)
       .then((res) => res.json())
-      .catch((err) => catchResult(err));
+      .catch(catchResult);
   }
   addTask(dataNotes) {
     return fetch(this.url, {
@@ -28,7 +28,7 @@ class TaskData {
       body: JSON.stringify(dataNotes),
     })
       .then((res) => res.json())
-      .catch((err) => catchResult(err));
+      .catch(catchResult);
   }
   removeTask(idToRemove) {
     const URL = `https://myfirstproject-361208-default-rtdb.firebaseio.com/tasks/${idToRemove}/.json`;
