@@ -1,0 +1,17 @@
+{
+  "name": "ht",
+  "version": "1.0.0",
+  "description": "Прочитать книгу [\"Паттерны для масштабируемых JavaScript-приложений\" Автор: Эдди Османи.](http://largescalejs.ru/)",
+  "main": "index.js",
+  "scripts": { 
+    "test": "jest",
+    "test:watch": "jest --watchAll"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.0.0",
+    "jest": "^29.0.2",
+    "jsdom": "^20.0.0"
+  }
+}
