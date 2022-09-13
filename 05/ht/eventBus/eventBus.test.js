@@ -10,69 +10,63 @@ describe("EventBus tests", () => {
     expect(typeof eventBus.listEvent).toBe("object");
   });
   test("method '.on' is 2 arguments", () => {
-    expect(eventBus.on.length).toBe(2);
+    expect(eventBus.on).toHaveLength(2);
   });
   test("method '.off' is 2 arguments", () => {
-    expect(eventBus.off.length).toBe(2);
+    expect(eventBus.off).toHaveLength(2);
   });
   test("method '.trigger' is 1 argument", () => {
-    expect(eventBus.trigger.length).toBe(1);
+    expect(eventBus.trigger).toHaveLength(1);
   });
-  test("triger transfers 2 param in method 'on'", () => {
-    let a = 0;
-    eventBus.on("click", (x, y) => (a = x + y));
-    eventBus.trigger("click", 3, 4);
-    expect(a).toBe(7);
+  test("trigger transfers 2 param in method 'on'", () => {
+    const fn1 = jest.fn();
+    const fn2 = jest.fn();
+    eventBus.on("click", fn1);
+    eventBus.on("click", fn2);
+    const args = [1, 2];
+    eventBus.trigger("click", ...args);
+    expect(fn1).toHaveBeenCalledWith(...args);
+    expect(fn2).toHaveBeenCalledWith(...args);
   });
-  test("triger transfers 4 param in method '.on'", () => {
-    let a = 0;
-    eventBus.on("click", (x, y, z, g) => (a = x + y + z + g));
-    eventBus.trigger("click", 3, 4, 5, 6);
-    expect(a).toBe(18);
+  test("trigger transfers 4 param in method '.on'", () => {
+    const fn = jest.fn();
+    eventBus.on("click", fn);
+    const args = [1, 2, 3, 4];
+    eventBus.trigger("click", ...args);
+    expect(fn).toHaveBeenCalledWith(...args);
   });
-  test("triger work with 3 methods '.on'", () => {
-    let multiply = 0;
-    let sum = 0;
-    let minus = 0;
-    eventBus.on("click", (x, y) => (multiply = x * y));
-    eventBus.on("click", (x, y) => (sum = x + y));
-    eventBus.on("click", (x, y) => (minus = x - y));
-    eventBus.trigger("click", 3, 4);
-    expect(multiply).toBe(12);
-    expect(sum).toBe(7);
-    expect(minus).toBe(-1);
+  test("trigger work with 3 methods '.on'", () => {
+    const fn1 = jest.fn((x, y) => (x * y));
+    const fn2 = jest.fn((x, y) => (x + y));
+    const fn3 = jest.fn((x, y) => (x - y));
+    eventBus.on("click", fn1);
+    eventBus.on("click", fn2);
+    eventBus.on("click", fn3);
+    const args = [3, 4];
+    eventBus.trigger("click", ...args);
+    expect(fn1(...args)).toBe(12);
+    expect(fn2(...args)).toBe(7);
+    expect(fn3(...args)).toBe(-1);
   });
   test("work check method '.off", () => {
-    let sum = 0;
-    let minus = 0;
-    function func1(x, y) {
-      return (sum = x + y);
-    }
-    function func2(x, y) {
-      return (minus = x - y);
-    }
-    eventBus.on("click", func1);
-    eventBus.on("click", func2);
-    eventBus.off("click", func1);
-    eventBus.off("click", func2);
+    const fn1 = jest.fn();
+    const fn2 = jest.fn();
+    eventBus.on("click", fn1);
+    eventBus.on("click", fn2);
+    eventBus.off("click", fn1);
+    eventBus.off("click", fn2);
     eventBus.trigger("click", 3, 4);
-    expect(sum !== 12).toBe(true);
-    expect(minus !== -1).toBe(true);
+    expect(fn1).toHaveBeenCalledTimes(0);
+    expect(fn2).toHaveBeenCalledTimes(0);
   });
   test("work check method '.off' with 1 param (delete all)", () => {
-    let sum = 0;
-    let minus = 0;
-    function func1(x, y) {
-      return (sum = x + y);
-    }
-    function func2(x, y) {
-      return (minus = x - y);
-    }
-    eventBus.on("click", func1);
-    eventBus.on("click", func2);
+    const fn1 = jest.fn();
+    const fn2 = jest.fn();
+    eventBus.on("click", fn1);
+    eventBus.on("click", fn2);
     eventBus.off("click");
     eventBus.trigger("click", 3, 4);
-    expect(sum !== 12).toBe(true);
-    expect(minus !== -1).toBe(true);
+    expect(fn1).toHaveBeenCalledTimes(0);
+    expect(fn2).toHaveBeenCalledTimes(0);
   });
 });

@@ -16,11 +16,11 @@ class EventBus {
     }
   }
 
-  trigger(eventName) {
+  trigger(eventName, ...args) {
     const arg = [].slice.call(arguments).slice(1);
     if (typeof eventName === "string" && this.listEvent.get(eventName)) {
-      this.listEvent.get(eventName).map((_el, index) => {
-        return this.listEvent.get(eventName)[index].apply(this, arg);
+      this.listEvent.get(eventName).forEach((cb) => {
+        cb(...args);
       });
     }
   }
