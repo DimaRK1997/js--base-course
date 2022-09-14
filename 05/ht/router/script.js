@@ -39,12 +39,19 @@ class Router {
 
   handleRouteChange(hash) {
     const nextRoute = this.selectNextRoute(hash);
-    if (nextRoute) {
-      this.currentRoute?.onLeave?.(...this.currentParam);
-      nextRoute?.onBeforeEnter?.(...this.currentParam);
-      nextRoute?.onEnter?.(...this.currentParam);
-      this.currentRoute = nextRoute;
-    }
+
+    Promise.resolve()
+      .then(() => {
+        this.currentRoute && this.currentRoute.onLeave && this.currentRoute.onLeave(...this.nextParam);
+        this.currentRoute = nextRoute;
+        this.nextParam = this.currentParam;
+      })
+      .then(() => {
+        nextRoute.onBeforeEnter(...this.currentParam);
+      })
+      .then(() => {
+        nextRoute.onEnter(...this.currentParam);
+      });
   }
 
   selectNextRoute(hash) {
@@ -53,7 +60,9 @@ class Router {
         return el;
       }
       if (el.match instanceof RegExp && hash.match(el.match)) {
-        this.currentParam = hash.match(el.match).splice(1, 2) || "";
+        Promise.resolve().then(() => {
+          this.currentParam = hash.match(el.match).splice(1, 2) || "";
+        });
         return el;
       }
       if (typeof el.match === "function" && el.match(hash)) {
