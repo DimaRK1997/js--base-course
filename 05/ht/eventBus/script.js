@@ -17,7 +17,6 @@ class EventBus {
   }
 
   trigger(eventName, ...args) {
-    const arg = [].slice.call(arguments).slice(1);
     if (typeof eventName === "string" && this.listEvent.get(eventName)) {
       this.listEvent.get(eventName).forEach((cb) => {
         cb(...args);
