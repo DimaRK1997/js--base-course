@@ -46,8 +46,8 @@ class Router {
     await (this.lastRoute && this.lastRoute.onLeave && this.lastRoute.onLeave(this.lastParam));
     this.lastRoute = currentRoute;
     this.lastParam = this.currentParam;
-    await currentRoute.onBeforeEnter(this.currentParam);
-    await currentRoute.onEnter(this.currentParam);
+    await (currentRoute && currentRoute.onBeforeEnter && currentRoute.onBeforeEnter(this.currentParam));
+    await (currentRoute && currentRoute.onEnter && currentRoute.onEnter(this.currentParam));
   };
 
   selectCurrentRoute = async (hash) => {
@@ -64,7 +64,7 @@ class Router {
         if (typeof matcher === "function" && el.match(hash)) {
           return el;
         }
-      }) || this.routes.find((route) => (route.isDefault ? route : ""));
+      }) || this.routes.find((route) => route.isDefault);
 
     return route;
   };
