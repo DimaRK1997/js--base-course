@@ -1,10 +1,12 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const {CleanWebpackPlugin} = require('clean-webpack-plugin')
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+
+const isDev = process.env.NODE_ENV === "development";
+const isProd = !isDev;
 module.exports = {
   entry: {
-    index: "./src/index.js"
-
+    index: "./src/index.js",
   },
   output: {
     filename: "[name].js",
@@ -13,19 +15,22 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html",
+      minify: {
+        collapseWhitespace: isProd,
+      },
     }),
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
   ],
   module: {
     rules: [
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        use: ["style-loader", "css-loader"],
       },
       {
         test: /\.(png|svg|jpg)$/,
-        use: ['file-loader']
-      }
-    ]
-  }
+        use: ["file-loader"],
+      },
+    ],
+  },
 };
