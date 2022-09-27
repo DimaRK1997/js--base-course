@@ -1,12 +1,11 @@
 import "./assets/css/owfont-regular.css";
 import "./assets/css/style.css";
-import "./router.js";
 
-const { Router } = require("./router.js");
-const { displayGoogleMap } = require("./googleAPI.js");
-const { showAboutContent, displayDataWeather, displayLastCities, showAuthorContent } = require("./pagesInfo.js");
-const { saveLocalStorage } = require("./storageData.js");
-const { getCityAndPos, changeCoordsHash } = require("./coordsAction.js");
+import { Router } from "./router";
+import { displayGoogleMap } from "./googleAPI";
+import { showAboutContent, displayDataWeather, displayLastCities, showAuthorContent } from "./pagesInfo";
+import { saveLocalStorage } from "./storageData";
+import { getCityAndPos, changeCoordsHash } from "./coordsAction";
 
 const dataUser = JSON.parse(localStorage.getItem("DataUser")) || {};
 dataUser.lastMap = dataUser.lastMap || [27.5667, 53.9];

@@ -1,6 +1,6 @@
 const dataUser = JSON.parse(localStorage.getItem("DataUser")) || { city: [] };
 
-async function saveLocalStorage(key, value) {
+export async function saveLocalStorage(key, value) {
   if (key === "city") {
     if (dataUser[key].length === 5) {
       dataUser[key].pop();
@@ -12,5 +12,3 @@ async function saveLocalStorage(key, value) {
   localStorage.setItem("DataUser", JSON.stringify(dataUser));
   return dataUser;
 }
-
-module.exports = saveLocalStorage;

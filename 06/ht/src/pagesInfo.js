@@ -1,4 +1,4 @@
-function showAboutContent(element) {
+export function showAboutContent(element) {
   element.innerHTML = `
       <div class="content_about">
           <h2>Информация о себе</h2>
@@ -6,7 +6,7 @@ function showAboutContent(element) {
       `;
 }
 
-async function displayDataWeather(element, city) {
+export async function displayDataWeather(element, city) {
   const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=ru&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
   const response = await fetch(URL);
   const data = await response.json();
@@ -39,7 +39,7 @@ async function displayDataWeather(element, city) {
       `;
 }
 
-async function displayLastCities(element, data) {
+export async function displayLastCities(element, data) {
   return (element.innerHTML = data.city
     .map((el) => {
       return `<li>${el}</li>`;
@@ -47,12 +47,10 @@ async function displayLastCities(element, data) {
     .join(""));
 }
 
-function showAuthorContent(element) {
+export function showAuthorContent(element) {
   element.innerHTML = `
     <div class="content_author">
         <h2>Dima Kedik</h2>
     </div>
     `;
 }
-
-module.exports = { showAboutContent, displayDataWeather, displayLastCities, showAuthorContent };
