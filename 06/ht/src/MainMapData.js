@@ -1,4 +1,4 @@
-async function showMapData(element, city) {
+async function drawDataCity(element, city) {
   const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=ru&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
   const data = await (await fetch(URL)).json();
 
@@ -30,4 +30,12 @@ async function showMapData(element, city) {
       `;
 }
 
-module.exports = showMapData;
+async function drawHistiryHTML(element, data) {
+  return (element.innerHTML = data.city
+    .map((el) => {
+      return `<li>${el}</li>`;
+    })
+    .join(""));
+}
+
+module.exports = { drawDataCity, drawHistiryHTML };

@@ -1,20 +1,23 @@
 const showAuthorContent = require("./AuthorInfo.js");
 const showAboutContent = require("./AboutInfo.js");
-const googleMap = require("./GoogleAPI.js");
-const showMapData = require("./MainMapData.js");
-const { itemsHistory, drawHistiryHTML } = require("./ItemsHistory.js");
+const resultGoogleMap = require("./GoogleAPI.js");
+const { drawDataCity, drawHistiryHTML } = require("./MainMapData.js");
+const saveLocalStorage = require("./StorageData.js");
+const { changeURL, resultURL } = require("./ChandeURL.js");
 
-const dataLocation = JSON.parse(localStorage.getItem("location")) || {};
-dataLocation.lastMap = dataLocation.lastMap || [27.5667, 53.9];
+const dataUser = JSON.parse(localStorage.getItem("DataUser")) || {};
+dataUser.lastMap = dataUser.lastMap || [27.5667, 53.9];
 
 const routes = [
   {
     match: /coord=(.+)/,
-    onResultDrawHTML: async (coord) => {
-      const [city, pos] = await resultURL(coord);
-      await showMapData(document.querySelector(".main"), city);
-      await googleMap(pos);
-      await drawHistiryHTML(document.querySelector(".history-items"));
+    onResultDrawHTML: async (coords) => {
+      const [city, pos] = await resultURL(coords);
+      dataUser.lastMap = pos;
+      const data = await saveLocalStorage("lastMap", pos);
+      await drawDataCity(document.querySelector(".main"), city);
+      await resultGoogleMap(pos);
+      await drawHistiryHTML(document.querySelector(".history-items"), data);
     },
   },
 
@@ -31,18 +34,14 @@ const routes = [
   {
     match: "main",
     onResultDrawHTML: async () => {
-      location.assign(
-        `${location.origin + location.pathname}#coord=${dataLocation.lastMap[0]},${dataLocation.lastMap[1]}`
-      );
+      await changeURL(dataUser.lastMap[0], dataUser.lastMap[1]);
     },
   },
 
   {
     match: "",
     onResultDrawHTML: async () => {
-      location.assign(
-        `${location.origin + location.pathname}#coord=${dataLocation.lastMap[0]},${dataLocation.lastMap[1]}`
-      );
+      await changeURL(dataUser.lastMap[0], dataUser.lastMap[1]);
     },
   },
 ];
@@ -89,26 +88,35 @@ class Router {
 }
 
 document.querySelector(".content_search").addEventListener("change", function (e) {
-  creatUrl(document.querySelector("#search").value);
+  searchCity(document.querySelector("#search").value);
+  document.querySelector("#search").value = "";
 });
 
-async function creatUrl(city) {
-  const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=ru&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
-  const data = await (await fetch(URL)).json();
-  location.assign(`${location.origin + location.pathname}#coord=${data.coord.lon},${data.coord.lat}`);
-  await itemsHistory(city);
-  document.querySelector("#search").value = "";
+async function searchCity(city) {
+  try {
+    const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=ru&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
+    const data = await (await fetch(URL)).json();
+    await changeURL(data.coord.lon, data.coord.lat);
+  } catch (err) {
+    alert("Ошибка запроса города");
+  }
 }
 
-async function resultURL(coord) {
-  const pos = coord.split(",") || [0, 0];
-  dataLocation.lastMap = pos;
-  localStorage.setItem("location", JSON.stringify(dataLocation));
-  const URL = `https://api.mapbox.com/geocoding/v5/mapbox.places/${pos[0]},${pos[1]}.json?access_token=pk.eyJ1IjoiZGltYTUwODMiLCJhIjoiY2w4YzhlYmQzMHgzYjQwcGJjdTd2eGJuayJ9.msmLRpckL1zuR5vmK3M_eA`;
-  const data = await (await fetch(URL)).json();
-  const city = data.features[1].place_name.split(", ")[1];
-  location.assign(`${location.origin + location.pathname}#coord=${pos[0]},${pos[1]}`);
-  return [city, pos];
-}
+// function locationUser() {
+//   navigator.geolocation.getCurrentPosition(coordUser);
+// }
+// locationUser();
 
+// function coordUser(pos) {
+//   dataUser.lastMap = [pos.coords.longitude, pos.coords.latitude];
+// }
+
+//
+// Как сделать чтобы при первом отрытии сайта,
+// у пользователя заросило местоположение,
+// если разрешил то нариовать там где он находиться, если не разрешил,
+// то тогда любую точку?
+
+// я сделал чтобы у меня был запрос, но у меня не ждет пока пользователь,
+// разрешит или запретит, у меня сразу рисует ту любую точку.
 const router = new Router(routes);
