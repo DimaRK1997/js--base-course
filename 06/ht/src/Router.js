@@ -96,6 +96,7 @@ async function searchCity(city) {
   try {
     const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=ru&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
     const data = await (await fetch(URL)).json();
+    if (data.cod === 200) await saveLocalStorage("city", city);
     await changeURL(data.coord.lon, data.coord.lat);
   } catch (err) {
     alert("Ошибка запроса города");
