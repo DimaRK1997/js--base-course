@@ -1,6 +1,15 @@
-async function drawDataCity(element, city) {
+function showAboutContent(element) {
+  element.innerHTML = `
+      <div class="content_about">
+          <h2>Информация о себе</h2>
+      </div>
+      `;
+}
+
+async function displayDataWeather(element, city) {
   const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=ru&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
-  const data = await (await fetch(URL)).json();
+  const response = await fetch(URL);
+  const data = await response.json();
 
   element.innerHTML = `
               <div id="map" class="content__map"></div>
@@ -30,7 +39,7 @@ async function drawDataCity(element, city) {
       `;
 }
 
-async function drawHistiryHTML(element, data) {
+async function displayLastCities(element, data) {
   return (element.innerHTML = data.city
     .map((el) => {
       return `<li>${el}</li>`;
@@ -38,4 +47,12 @@ async function drawHistiryHTML(element, data) {
     .join(""));
 }
 
-module.exports = { drawDataCity, drawHistiryHTML };
+function showAuthorContent(element) {
+  element.innerHTML = `
+    <div class="content_author">
+        <h2>Dima Kedik</h2>
+    </div>
+    `;
+}
+
+module.exports = { showAboutContent, displayDataWeather, displayLastCities, showAuthorContent };
