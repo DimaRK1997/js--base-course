@@ -4,7 +4,6 @@
   "description": "Сайт состоит из трех блоков.",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack --mode development --config webpack.config.js",
     "build": "cross-env NODE_ENV=production webpack --mode production --config webpack.config.js",
     "watch": "cross-env NODE_ENV=development webpack --mode development --config webpack.config.js --watch"
   },

@@ -1,5 +1,5 @@
 export async function getCityAndPos(coords) {
-  const pos = coords.split(",") || [0, 0];
+  const pos = coords.split("%2C") || [0, 0];
   const URL = `https://api.mapbox.com/geocoding/v5/mapbox.places/${pos[0]},${pos[1]}.json?access_token=pk.eyJ1IjoiZGltYTUwODMiLCJhIjoiY2w4YzhlYmQzMHgzYjQwcGJjdTd2eGJuayJ9.msmLRpckL1zuR5vmK3M_eA`;
   const response = await fetch(URL);
   const data = await response.json();
@@ -8,5 +8,8 @@ export async function getCityAndPos(coords) {
 }
 
 export async function changeCoordsHash(lon, lat) {
-  location.hash = `#coord=${lon},${lat}`;
+  const paramsString = location.hash.substring(1);
+  const searchParams = new URLSearchParams(paramsString);
+  searchParams.set("coord", [lon, lat]);
+  location.hash = searchParams.toString();
 }

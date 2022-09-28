@@ -12,6 +12,13 @@ dataUser.lastMap = dataUser.lastMap || [27.5667, 53.9];
 
 const routes = [
   {
+    match: "weather-forecast",
+    onResultDrawHTML: async () => {
+      await changeCoordsHash(dataUser.lastMap[0], dataUser.lastMap[1]);
+    },
+  },
+
+  {
     match: /coord=(.+)/,
     onResultDrawHTML: async (coords) => {
       const [city, pos] = await getCityAndPos(coords);
@@ -31,20 +38,6 @@ const routes = [
   {
     match: "author",
     onResultDrawHTML: async () => showAuthorContent(document.querySelector(".main")),
-  },
-
-  {
-    match: "main",
-    onResultDrawHTML: async () => {
-      await changeCoordsHash(dataUser.lastMap[0], dataUser.lastMap[1]);
-    },
-  },
-
-  {
-    match: "",
-    onResultDrawHTML: async () => {
-      await changeCoordsHash(dataUser.lastMap[0], dataUser.lastMap[1]);
-    },
   },
 ];
 
