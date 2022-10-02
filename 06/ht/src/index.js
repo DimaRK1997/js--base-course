@@ -2,31 +2,34 @@ import "./assets/css/owfont-regular.css";
 import "./assets/css/style.css";
 
 import { Router } from "./router";
-import { displayGoogleMap } from "./googleAPI";
-import { showAboutContent, displayDataWeather, displayLastCities, showAuthorContent } from "./pagesInfo";
+import { displayGoogleMap } from "./mapService";
+import {
+  showAboutContent,
+  displayDataWeather,
+  displayLastCities,
+  displayLastFavorites,
+  showAuthorContent,
+} from "./pagesInfo";
 import { saveLocalStorage } from "./storageData";
-import { getCityAndPos, changeCoordsHash } from "./coordsAction";
+import { getCityOnCoords, setSearchCoords, getSearchCoords, getCityData } from "./geolocationService";
 
-const dataUser = JSON.parse(localStorage.getItem("DataUser")) || {};
-dataUser.lastMap = dataUser.lastMap || [27.5667, 53.9];
-
+const dataUser = JSON.parse(localStorage.getItem("DataUser")) || { city: [] };
+const favoritesUser = JSON.parse(localStorage.getItem("FavoritesUser")) || [];
 const routes = [
   {
     match: "weather-forecast",
     onResultDrawHTML: async () => {
-      await changeCoordsHash(dataUser.lastMap[0], dataUser.lastMap[1]);
-    },
-  },
-
-  {
-    match: /coord=(.+)/,
-    onResultDrawHTML: async (coords) => {
-      const [city, pos] = await getCityAndPos(coords);
-      dataUser.lastMap = pos;
-      const data = await saveLocalStorage("lastMap", pos);
-      await displayDataWeather(document.querySelector(".main"), city);
-      await displayGoogleMap(pos);
-      await displayLastCities(document.querySelector(".history-items"), data);
+      if (!location.search) {
+        const defaultCoords = [27.5667, 53.9];
+        setSearchCoords(defaultCoords[0], defaultCoords[1]);
+      }
+      const coords = getSearchCoords();
+      const city = await getCityOnCoords(coords);
+      const data = await getCityData(city);
+      displayDataWeather(document.querySelector(".main"), data);
+      displayGoogleMap(coords);
+      displayLastCities(document.querySelector(".history-items"), dataUser);
+      displayLastFavorites(document.querySelector(".favorites-items"), favoritesUser);
     },
   },
 
@@ -47,15 +50,9 @@ document.querySelector(".content_search").addEventListener("change", function (e
 });
 
 async function searchCity(city) {
-  try {
-    const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=ru&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
-    const response = await fetch(URL);
-    const data = await response.json();
-    if (data.cod === 200) await saveLocalStorage("city", city);
-    await changeCoordsHash(data.coord.lon, data.coord.lat);
-  } catch (err) {
-    alert("Ошибка запроса города");
-  }
+  const data = await getCityData(city);
+  if (data.cod === 200) saveLocalStorage("city", city);
+  setSearchCoords(data.coord.lon, data.coord.lat);
 }
 
 const router = new Router(routes);

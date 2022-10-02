@@ -9,6 +9,14 @@ body {
   background: rgb(202, 190, 175);
   font-size: 20px;
 }
+button {
+  background: none;
+  border:none
+}
+
+button:hover {
+  cursor: pointer;
+}
 
 .header {
   display: flex;
@@ -104,6 +112,11 @@ a {
 
 .description {
   margin: 5px 20px;
+}
+
+.item-favorite {
+  display: flex;
+  justify-content: space-between;
 }
 
 /* .info_favorites {

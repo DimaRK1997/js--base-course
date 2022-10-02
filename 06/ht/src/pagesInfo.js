@@ -1,3 +1,5 @@
+import { setSearchCoords } from "./geolocationService";
+
 export function showAboutContent(element) {
   element.innerHTML = `
       <div class="content_about">
@@ -6,11 +8,7 @@ export function showAboutContent(element) {
       `;
 }
 
-export async function displayDataWeather(element, city) {
-  const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=ru&appid=08f2a575dda978b9c539199e54df03b0&units=metric`;
-  const response = await fetch(URL);
-  const data = await response.json();
-
+export function displayDataWeather(element, data) {
   element.innerHTML = `
               <div id="map" class="content__map"></div>
               <div class="content__info">
@@ -37,12 +35,26 @@ export async function displayDataWeather(element, city) {
                   </div>
               </div>
       `;
+  document.querySelector(".favorites-items").addEventListener("click", displayFavorites);
 }
 
-export async function displayLastCities(element, data) {
+export function displayLastCities(element, data) {
   return (element.innerHTML = data.city
     .map((el) => {
       return `<li>${el}</li>`;
+    })
+    .join(""));
+}
+
+export function displayLastFavorites(element, data) {
+  return (element.innerHTML = data
+    .map((el) => {
+      return `<li class="favorite" data-coords="${el.data}">
+                <div class="item-favorite">
+                  <h4 class="name">${el.name}</h4>
+                  <button>✖</button>
+                </div>    
+              </li>`;
     })
     .join(""));
 }
@@ -53,4 +65,21 @@ export function showAuthorContent(element) {
         <h2>Dima Kedik</h2>
     </div>
     `;
+}
+
+function displayFavorites(e) {
+  const favoritesUser = JSON.parse(localStorage.getItem("FavoritesUser")) || [];
+  const elToCoords = e.target.parentNode.parentNode.getAttribute("data-coords");
+  const clickOnFavorite = e.target.matches(".name");
+  favoritesUser.map((el, i) => {
+    if (el.data == elToCoords && e.target.tagName === "BUTTON") {
+      favoritesUser.splice(i, 1);
+    }
+
+    if (el.data == elToCoords && clickOnFavorite) {
+      setSearchCoords(el.coords.lng, el.coords.lat);
+    }
+  });
+  localStorage.setItem("FavoritesUser", JSON.stringify(favoritesUser));
+  displayLastFavorites(document.querySelector(".favorites-items"), favoritesUser);
 }
