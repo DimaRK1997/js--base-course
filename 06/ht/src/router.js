@@ -1,3 +1,15 @@
+const _wr = function (type) {
+  var orig = history[type];
+  return function () {
+    var rv = orig.apply(this, arguments);
+    var e = new Event(type);
+    e.arguments = arguments;
+    window.dispatchEvent(e);
+    return rv;
+  };
+};
+history.pushState = _wr("pushState");
+
 export class Router {
   constructor(routes) {
     this.routes = routes;
@@ -5,6 +17,11 @@ export class Router {
       this.handleRouteChange(location.hash.substring(1));
     });
     this.handleRouteChange(location.hash.substring(1));
+
+    window.addEventListener("pushState", () => {
+      this.handleRouteChange(location.search);
+    });
+    this.handleRouteChange(location.search);
   }
 
   async handleRouteChange(hash) {

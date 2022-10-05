@@ -11,7 +11,7 @@ body {
 }
 button {
   background: none;
-  border:none
+  border: none;
 }
 
 button:hover {
@@ -79,14 +79,20 @@ a {
   justify-content: space-around;
 }
 
-.info_history, .info_weather, .info_favorites {
+.info_history,
+.info_weather,
+.info_favorites {
   width: 300px;
   box-shadow: 0px 0px 15px, 0px 5px 10px #8d8282;
   border: 2px solid;
-
 }
-.history-title, .favorites-title {
+.history-title,
+.favorites-title {
   margin: 15px;
+}
+
+.city {
+  inline-size: min-content;
 }
 
 /* .info_weather {

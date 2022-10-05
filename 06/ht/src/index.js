@@ -3,18 +3,9 @@ import "./assets/css/style.css";
 
 import { Router } from "./router";
 import { displayGoogleMap } from "./mapService";
-import {
-  showAboutContent,
-  displayDataWeather,
-  displayLastCities,
-  displayLastFavorites,
-  showAuthorContent,
-} from "./pagesInfo";
-import { saveLocalStorage } from "./storageData";
+import { showAboutContent, displayDataWeather, displayMainContent, showAuthorContent } from "./pagesInfo";
 import { getCityOnCoords, setSearchCoords, getSearchCoords, getCityData } from "./geolocationService";
 
-const dataUser = JSON.parse(localStorage.getItem("DataUser")) || { city: [] };
-const favoritesUser = JSON.parse(localStorage.getItem("FavoritesUser")) || [];
 const routes = [
   {
     match: "weather-forecast",
@@ -26,10 +17,20 @@ const routes = [
       const coords = getSearchCoords();
       const city = await getCityOnCoords(coords);
       const data = await getCityData(city);
-      displayDataWeather(document.querySelector(".main"), data);
+      displayMainContent(document.querySelector(".main"));
       displayGoogleMap(coords);
-      displayLastCities(document.querySelector(".history-items"), dataUser);
-      displayLastFavorites(document.querySelector(".favorites-items"), favoritesUser);
+      displayDataWeather(document.querySelector(".info_weather"), data);
+    },
+  },
+
+  {
+    match: /lon=(.+)/,
+    onResultDrawHTML: async (coords) => {
+      coords = coords.split("&lat=");
+      coords = [+coords[0], +coords[1]];
+      const city = await getCityOnCoords(coords);
+      const data = await getCityData(city);
+      displayDataWeather(document.querySelector(".info_weather"), data);
     },
   },
 
@@ -43,16 +44,5 @@ const routes = [
     onResultDrawHTML: async () => showAuthorContent(document.querySelector(".main")),
   },
 ];
-
-document.querySelector(".content_search").addEventListener("change", function (e) {
-  searchCity(document.querySelector("#search").value);
-  document.querySelector("#search").value = "";
-});
-
-async function searchCity(city) {
-  const data = await getCityData(city);
-  if (data.cod === 200) saveLocalStorage("city", city);
-  setSearchCoords(data.coord.lon, data.coord.lat);
-}
 
 const router = new Router(routes);

@@ -1,8 +1,14 @@
-import { setSearchCoords } from "./geolocationService";
+import { setSearchCoords, getCityData, getMarkerAndMoveLocation } from "./geolocationService";
+import { displayLastCities, displayLastFavorites } from "./pagesInfo";
+import { saveLocalStorage } from "./storageData";
 
 const favoritesUser = JSON.parse(localStorage.getItem("FavoritesUser")) || [];
+const dataUser = JSON.parse(localStorage.getItem("DataUser")) || { city: [] };
 
 export function displayGoogleMap(coords) {
+  const historyElement = document.querySelector(".history-items");
+  const favoritesElement = document.querySelector(".favorites-items");
+
   mapboxgl.accessToken = "pk.eyJ1IjoiZGltYTUwODMiLCJhIjoiY2w4YzhlYmQzMHgzYjQwcGJjdTd2eGJuayJ9.msmLRpckL1zuR5vmK3M_eA";
   const map = new mapboxgl.Map({
     container: "map",
@@ -10,24 +16,74 @@ export function displayGoogleMap(coords) {
     center: coords,
     zoom: 9,
   });
-  new mapboxgl.Marker({ color: "red", rotation: 0 }).setLngLat(coords).addTo(map);
+
+  new mapboxgl.Marker({ color: "black", rotation: 0 }).setLngLat(coords).addTo(map);
+
+  map.on("moveend", async function (e) {
+    const center = map.getCenter();
+    setSearchCoords(center.lng, center.lat);
+  });
 
   favoritesUser.map((el) => {
-    new mapboxgl.Marker({ color: "black", rotation: 0 }).setLngLat(el.coords).addTo(map);
+    const marker = new mapboxgl.Marker({ color: "red", rotation: 0 }).setLngLat(el.coords).addTo(map);
+    marker.user = el;
   });
 
-  map.on("dblclick", function (e) {
-    const favorites = {
+  map.on("click", function (e) {
+    const marker = new mapboxgl.Marker({ color: "red", rotation: 0 }).setLngLat(e.lngLat).addTo(map);
+    marker.user = {
       data: Math.random(),
-      name: null,
-      coords: {},
+      name: prompt("Name favorites:"),
+      coords: e.lngLat,
     };
-    favorites.name = prompt("Name favorites:");
-    if (favorites.name) {
-      favorites.coords = e.lngLat;
-      favoritesUser.unshift(favorites);
+    if (marker.user.name) {
+      displayLastFavorites(favoritesElement, map._markers);
+      favoritesUser.push(marker.user);
       localStorage.setItem("FavoritesUser", JSON.stringify(favoritesUser));
-      setSearchCoords(e.lngLat.lng, e.lngLat.lat);
     }
   });
+
+  document.querySelector(".content_search").addEventListener("change", async (e) => {
+    const city = document.querySelector("#search");
+    const data = await getCityData(city.value);
+    if (data.cod === 200) {
+      saveLocalStorage("city", city.value, dataUser);
+      setSearchCoords(data.coord.lon, data.coord.lat);
+      displayLastCities(historyElement, dataUser);
+      getMarkerAndMoveLocation(data, map);
+    }
+    city.value = "";
+  });
+
+  document.querySelector(".content__info").addEventListener("click", async (e) => {
+    const elToCoords = e.target.parentNode.parentNode.getAttribute("data-coords");
+    const clickOnFavorite = e.target.matches(".name");
+    const clickOnCity = e.target.matches(".city");
+
+    map._markers.map((el, i) => {
+      if (el.user) {
+        if (el.user.data == elToCoords && e.target.tagName === "BUTTON") {
+          el.remove();
+          favoritesUser.splice(i, 1);
+        }
+        if (el.user.data == elToCoords && clickOnFavorite) {
+          setSearchCoords(el.user.coords.lng, el.user.coords.lat);
+          map.flyTo({
+            center: [el.user.coords.lng, el.user.coords.lat],
+          });
+        }
+      }
+    });
+    if (clickOnCity) {
+      const city = e.target.getAttribute("data-city");
+      const data = await getCityData(city);
+      setSearchCoords(data.coord.lon, data.coord.lat);
+      getMarkerAndMoveLocation(data, map);
+    }
+    displayLastFavorites(favoritesElement, map._markers);
+    localStorage.setItem("FavoritesUser", JSON.stringify(favoritesUser));
+  });
+
+  displayLastCities(historyElement, dataUser);
+  displayLastFavorites(favoritesElement, map._markers);
 }

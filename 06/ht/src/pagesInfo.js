@@ -1,5 +1,3 @@
-import { setSearchCoords } from "./geolocationService";
-
 export function showAboutContent(element) {
   element.innerHTML = `
       <div class="content_about">
@@ -8,7 +6,7 @@ export function showAboutContent(element) {
       `;
 }
 
-export function displayDataWeather(element, data) {
+export function displayMainContent(element) {
   element.innerHTML = `
               <div id="map" class="content__map"></div>
               <div class="content__info">
@@ -20,11 +18,7 @@ export function displayDataWeather(element, data) {
                       </div>    
                   </div>
                   <div class="info_weather">
-                      <div class="name-owf">
-                          <h3>${data.name}</h3><i class="owf owf-${data.weather[0].id} owf-2x"></i>
-                      </div>
-                      <div class="temperature">Temperature: ${data.main.temp}℃</div>
-                      <div class="description">${data.weather[0].description}</div>
+                      
                   </div>
                   <div class="info_favorites">
                       <div class="favorites-title">
@@ -35,13 +29,24 @@ export function displayDataWeather(element, data) {
                   </div>
               </div>
       `;
-  document.querySelector(".favorites-items").addEventListener("click", displayFavorites);
+}
+
+export function displayDataWeather(element, data) {
+  if (data.weather) {
+    element.innerHTML = `
+      <div class="name-owf">
+        <h3>${data.name}</h3><i class="owf owf-${data.weather[0].id} owf-2x"></i>
+      </div>
+      <div class="temperature">Temperature: ${data.main.temp}℃</div>
+      <div class="description">${data.weather[0].description}</div>            
+      `;
+  }
 }
 
 export function displayLastCities(element, data) {
   return (element.innerHTML = data.city
     .map((el) => {
-      return `<li>${el}</li>`;
+      return `<li class="city" data-city="${el}">${el}</li>`;
     })
     .join(""));
 }
@@ -49,12 +54,14 @@ export function displayLastCities(element, data) {
 export function displayLastFavorites(element, data) {
   return (element.innerHTML = data
     .map((el) => {
-      return `<li class="favorite" data-coords="${el.data}">
+      if (el.user) {
+        return `<li class="favorite" data-coords="${el.user.data}">
                 <div class="item-favorite">
-                  <h4 class="name">${el.name}</h4>
+                  <h4 class="name">${el.user.name}</h4>
                   <button>✖</button>
                 </div>    
               </li>`;
+      }
     })
     .join(""));
 }
@@ -65,21 +72,4 @@ export function showAuthorContent(element) {
         <h2>Dima Kedik</h2>
     </div>
     `;
-}
-
-function displayFavorites(e) {
-  const favoritesUser = JSON.parse(localStorage.getItem("FavoritesUser")) || [];
-  const elToCoords = e.target.parentNode.parentNode.getAttribute("data-coords");
-  const clickOnFavorite = e.target.matches(".name");
-  favoritesUser.map((el, i) => {
-    if (el.data == elToCoords && e.target.tagName === "BUTTON") {
-      favoritesUser.splice(i, 1);
-    }
-
-    if (el.data == elToCoords && clickOnFavorite) {
-      setSearchCoords(el.coords.lng, el.coords.lat);
-    }
-  });
-  localStorage.setItem("FavoritesUser", JSON.stringify(favoritesUser));
-  displayLastFavorites(document.querySelector(".favorites-items"), favoritesUser);
 }

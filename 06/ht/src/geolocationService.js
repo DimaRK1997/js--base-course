@@ -14,11 +14,10 @@ export async function getCityData(city) {
 }
 
 export function setSearchCoords(lon, lat) {
-  const paramsString = location.search.substring(1);
-  const searchParams = new URLSearchParams(paramsString);
-  searchParams.set("lon", lon);
-  searchParams.set("lat", lat);
-  location.search = searchParams.toString();
+  const url = new URL(window.location);
+  url.searchParams.set("lon", lon);
+  url.searchParams.set("lat", lat);
+  history.pushState({}, "", url);
 }
 
 export function getSearchCoords() {
@@ -26,4 +25,16 @@ export function getSearchCoords() {
   const searchParams = new URLSearchParams(paramsString);
   const coords = [searchParams.get("lon"), searchParams.get("lat")];
   return coords;
+}
+
+export function getMarkerAndMoveLocation(data, map) {
+  map.flyTo({
+    center: [data.coord.lon, data.coord.lat],
+  });
+  map._markers.map((el) => {
+    if (el._color === "black") {
+      el.remove();
+    }
+  });
+  new mapboxgl.Marker({ color: "black", rotation: 0 }).setLngLat([data.coord.lon, data.coord.lat]).addTo(map);
 }
