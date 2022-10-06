@@ -14,7 +14,7 @@ export function displayGoogleMap(coords) {
     container: "map",
     style: "mapbox://styles/mapbox/streets-v11",
     center: coords,
-    zoom: 9,
+    zoom: 7,
   });
 
   new mapboxgl.Marker({ color: "black", rotation: 0 }).setLngLat(coords).addTo(map);
@@ -30,13 +30,14 @@ export function displayGoogleMap(coords) {
   });
 
   map.on("click", function (e) {
-    const marker = new mapboxgl.Marker({ color: "red", rotation: 0 }).setLngLat(e.lngLat).addTo(map);
-    marker.user = {
-      data: Math.random(),
-      name: prompt("Name favorites:"),
-      coords: e.lngLat,
-    };
-    if (marker.user.name) {
+    const name = prompt("Name favorites:");
+    if (name) {
+      const marker = new mapboxgl.Marker({ color: "red", rotation: 0 }).setLngLat(e.lngLat).addTo(map);
+      marker.user = {
+        data: Math.random(),
+        name: name,
+        coords: e.lngLat,
+      };
       displayLastFavorites(favoritesElement, map._markers);
       favoritesUser.push(marker.user);
       localStorage.setItem("FavoritesUser", JSON.stringify(favoritesUser));
@@ -64,7 +65,11 @@ export function displayGoogleMap(coords) {
       if (el.user) {
         if (el.user.data == elToCoords && e.target.tagName === "BUTTON") {
           el.remove();
-          favoritesUser.splice(i, 1);
+          favoritesUser.map((el, i) => {
+            if (el.data == elToCoords) {
+              favoritesUser.splice(i, 1);
+            }
+          });
         }
         if (el.user.data == elToCoords && clickOnFavorite) {
           setSearchCoords(el.user.coords.lng, el.user.coords.lat);

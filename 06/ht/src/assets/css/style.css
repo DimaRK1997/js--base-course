@@ -3,11 +3,6 @@
 }
 
 body {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  background: rgb(202, 190, 175);
-  font-size: 20px;
 }
 button {
   background: none;
@@ -19,12 +14,17 @@ button:hover {
 }
 
 .header {
+  position: relative;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  margin: auto;
+  padding: 0 15px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 20px;
+  max-width: 100%;
+  background: rgba(254, 255, 255, 0.8);
   align-items: center;
   height: 60px;
 }
@@ -60,20 +60,26 @@ a {
 }
 
 .main {
-  max-width: 1200px;
   width: 100%;
 }
 
 #map {
   margin: auto;
-  width: 600px;
-  height: 400px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
 }
 
 .content__info {
+  position: absolute;
+  z-index: 2;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  margin: auto;
   display: flex;
   flex-direction: row;
-  margin-top: 25px;
   max-width: 1200px;
   width: 100%;
   justify-content: space-around;
@@ -85,6 +91,7 @@ a {
   width: 300px;
   box-shadow: 0px 0px 15px, 0px 5px 10px #8d8282;
   border: 2px solid;
+  background: rgba(237, 241, 243, 0.7);
 }
 .history-title,
 .favorites-title {
@@ -95,11 +102,12 @@ a {
   inline-size: min-content;
 }
 
-/* .info_weather {
-  width: 300px;
-  box-shadow: 0px 0px 15px, 0px 5px 10px #8d8282;
-  border: 2px solid;
-} */
+.city:hover,
+.name:hover {
+  cursor: pointer;
+  font-size: 17px;
+  transition: 0.5s;
+}
 
 .name-owf {
   display: flex;
@@ -107,9 +115,6 @@ a {
   align-items: end;
   justify-content: space-between;
   margin: 5px 20px;
-}
-
-.owf {
 }
 
 .temperature {
@@ -124,7 +129,3 @@ a {
   display: flex;
   justify-content: space-between;
 }
-
-/* .info_favorites {
-  width: 300px;
-} */

@@ -57,7 +57,7 @@ export function displayLastFavorites(element, data) {
       if (el.user) {
         return `<li class="favorite" data-coords="${el.user.data}">
                 <div class="item-favorite">
-                  <h4 class="name">${el.user.name}</h4>
+                  <p class="name">${el.user.name}</p>
                   <button>✖</button>
                 </div>    
               </li>`;
