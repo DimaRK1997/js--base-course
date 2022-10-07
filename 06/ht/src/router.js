@@ -1,14 +1,14 @@
-const _wr = function (type) {
-  var orig = history[type];
+const event = function (type) {
+  const orig = history[type];
   return function () {
-    var rv = orig.apply(this, arguments);
-    var e = new Event(type);
+    const func = orig.apply(this, arguments);
+    const e = new Event(type);
     e.arguments = arguments;
     window.dispatchEvent(e);
-    return rv;
+    return func;
   };
 };
-history.pushState = _wr("pushState");
+history.pushState = event("pushState");
 
 export class Router {
   constructor(routes) {
@@ -31,7 +31,7 @@ export class Router {
     } catch (error) {
       console.log("Ошибка получения роутера " + error);
     }
-    await (currentRoute && currentRoute.onResultDrawHTML && currentRoute.onResultDrawHTML(this.currentParam));
+    await (currentRoute && currentRoute.onEnter && currentRoute.onEnter(this.currentParam));
   }
 
   selectCurrentRoute(hash) {

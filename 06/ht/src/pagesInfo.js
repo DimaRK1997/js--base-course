@@ -44,9 +44,9 @@ export function displayDataWeather(element, data) {
 }
 
 export function displayLastCities(element, data) {
-  return (element.innerHTML = data.city
+  return (element.innerHTML = data
     .map((el) => {
-      return `<li class="city" data-city="${el}">${el}</li>`;
+      return `<li class="city" data-city="${el}"><p class="name">${el}</p></li>`;
     })
     .join(""));
 }
@@ -55,7 +55,7 @@ export function displayLastFavorites(element, data) {
   return (element.innerHTML = data
     .map((el) => {
       if (el.user) {
-        return `<li class="favorite" data-coords="${el.user.data}">
+        return `<li class="favorite" data-coords="${el.user.id}">
                 <div class="item-favorite">
                   <p class="name">${el.user.name}</p>
                   <button>✖</button>

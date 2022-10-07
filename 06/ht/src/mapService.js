@@ -2,8 +2,8 @@ import { setSearchCoords, getCityData, getMarkerAndMoveLocation } from "./geoloc
 import { displayLastCities, displayLastFavorites } from "./pagesInfo";
 import { saveLocalStorage } from "./storageData";
 
-const favoritesUser = JSON.parse(localStorage.getItem("FavoritesUser")) || [];
-const dataUser = JSON.parse(localStorage.getItem("DataUser")) || { city: [] };
+const history = saveLocalStorage("history");
+let favoritesUser = saveLocalStorage("FavoritesUser");
 
 export function displayGoogleMap(coords) {
   const historyElement = document.querySelector(".history-items");
@@ -14,7 +14,7 @@ export function displayGoogleMap(coords) {
     container: "map",
     style: "mapbox://styles/mapbox/streets-v11",
     center: coords,
-    zoom: 7,
+    zoom: 10,
   });
 
   new mapboxgl.Marker({ color: "black", rotation: 0 }).setLngLat(coords).addTo(map);
@@ -34,13 +34,12 @@ export function displayGoogleMap(coords) {
     if (name) {
       const marker = new mapboxgl.Marker({ color: "red", rotation: 0 }).setLngLat(e.lngLat).addTo(map);
       marker.user = {
-        data: Math.random(),
+        id: Date.now(),
         name: name,
         coords: e.lngLat,
       };
       displayLastFavorites(favoritesElement, map._markers);
-      favoritesUser.push(marker.user);
-      localStorage.setItem("FavoritesUser", JSON.stringify(favoritesUser));
+      favoritesUser = saveLocalStorage("FavoritesUser", marker.user);
     }
   });
 
@@ -48,9 +47,9 @@ export function displayGoogleMap(coords) {
     const city = document.querySelector("#search");
     const data = await getCityData(city.value);
     if (data.cod === 200) {
-      saveLocalStorage("city", city.value, dataUser);
+      const getCities = saveLocalStorage("history", city.value);
       setSearchCoords(data.coord.lon, data.coord.lat);
-      displayLastCities(historyElement, dataUser);
+      displayLastCities(historyElement, getCities);
       getMarkerAndMoveLocation(data, map);
     }
     city.value = "";
@@ -59,19 +58,19 @@ export function displayGoogleMap(coords) {
   document.querySelector(".content__info").addEventListener("click", async (e) => {
     const elToCoords = e.target.parentNode.parentNode.getAttribute("data-coords");
     const clickOnFavorite = e.target.matches(".name");
-    const clickOnCity = e.target.matches(".city");
+    const clickOnCity = e.target.matches(".name");
 
     map._markers.map((el, i) => {
       if (el.user) {
-        if (el.user.data == elToCoords && e.target.tagName === "BUTTON") {
+        if (el.user.id == elToCoords && e.target.tagName === "BUTTON") {
           el.remove();
           favoritesUser.map((el, i) => {
-            if (el.data == elToCoords) {
+            if (el.id == elToCoords) {
               favoritesUser.splice(i, 1);
             }
           });
         }
-        if (el.user.data == elToCoords && clickOnFavorite) {
+        if (el.user.id == elToCoords && clickOnFavorite) {
           setSearchCoords(el.user.coords.lng, el.user.coords.lat);
           map.flyTo({
             center: [el.user.coords.lng, el.user.coords.lat],
@@ -79,8 +78,8 @@ export function displayGoogleMap(coords) {
         }
       }
     });
-    if (clickOnCity) {
-      const city = e.target.getAttribute("data-city");
+    if (clickOnCity && e.target.parentNode.hasAttribute("data-city")) {
+      const city = e.target.parentNode.getAttribute("data-city");
       const data = await getCityData(city);
       setSearchCoords(data.coord.lon, data.coord.lat);
       getMarkerAndMoveLocation(data, map);
@@ -89,6 +88,6 @@ export function displayGoogleMap(coords) {
     localStorage.setItem("FavoritesUser", JSON.stringify(favoritesUser));
   });
 
-  displayLastCities(historyElement, dataUser);
+  displayLastCities(historyElement, history);
   displayLastFavorites(favoritesElement, map._markers);
 }

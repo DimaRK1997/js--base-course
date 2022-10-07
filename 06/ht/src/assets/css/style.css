@@ -3,7 +3,11 @@
 }
 
 body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+    "Helvetica Neue", sans-serif;
+  font-weight: 300;
 }
+
 button {
   background: none;
   border: none;
@@ -36,6 +40,12 @@ button:hover {
 a {
   text-decoration: none;
   color: black;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline red 2px;
+  transition: 0.4s;
 }
 
 .content_search {
@@ -102,10 +112,9 @@ a {
   inline-size: min-content;
 }
 
-.city:hover,
 .name:hover {
   cursor: pointer;
-  font-size: 17px;
+  font-weight: 400;
   transition: 0.5s;
 }
 

@@ -1,12 +1,15 @@
-export async function saveLocalStorage(key, value, dataUser) {
-  if (key === "city") {
-    if (dataUser[key].length === 5) {
-      dataUser[key].pop();
+export function saveLocalStorage(name, value) {
+  let data = JSON.parse(localStorage.getItem(name)) || [];
+  if (!value) {
+    return data;
+  } else if (name === "history") {
+    if (data.length === 5) {
+      data.pop();
     }
-    dataUser[key].unshift(value);
+    data.unshift(value);
   } else {
-    dataUser[key] = value;
+    data.push(value);
   }
-  localStorage.setItem("DataUser", JSON.stringify(dataUser));
-  return dataUser;
+  localStorage.setItem(name, JSON.stringify(data));
+  return data;
 }
