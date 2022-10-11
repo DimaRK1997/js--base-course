@@ -44,7 +44,7 @@ a {
 }
 
 a:hover {
-  text-decoration: underline red 2px;
+  text-decoration: underline rgb(170, 74, 74) 2px;
   transition: 0.4s;
 }
 
@@ -137,4 +137,19 @@ a:hover {
 .item-favorite {
   display: flex;
   justify-content: space-between;
+}
+
+h2 {
+  text-align: center;
+}
+
+.content_about {
+  width: calc(100% - 60px);
+  margin: auto;
+}
+
+p {
+  font-weight: 400;
+  text-align: justify;
+  text-indent: 20px;
 }

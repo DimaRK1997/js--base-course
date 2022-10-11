@@ -1,7 +1,12 @@
 export function showAboutContent(element) {
   element.innerHTML = `
       <div class="content_about">
-          <h2>Информация о себе</h2>
+          <p>I am a beginner frontend developer. From 2019 to 2022 he worked as a system administrator. 
+          In 2020, I graduated from Ya. Kupala State University of Grodno, where I partially studied 
+          programming and it was interesting for me. At the beginning of 2022, I enrolled in a JavaScript course, 
+          which I successfully completed. In the middle of 2022, I decided to leave my job in order 
+          to devote more time to programming, namely the profession of a Front-end developer.
+          My personal qualities: perseverance, attentiveness, desire for self-improvement, responsibility, perseverance.</p>
       </div>
       `;
 }
@@ -69,7 +74,7 @@ export function displayLastFavorites(element, data) {
 export function showAuthorContent(element) {
   element.innerHTML = `
     <div class="content_author">
-        <h2>Dima Kedik</h2>
+      <h2>Author - <a href='https://dimark1997.github.io/myCV/'>Dmitry Kedik</a></h2>
     </div>
     `;
 }
